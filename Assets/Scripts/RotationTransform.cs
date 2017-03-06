@@ -5,15 +5,15 @@ using UnityEngine;
 public class RotationTransform : Transformation {
 
     public Vector3 rotation;
-    public Vector2 rotationSensitivity = new Vector2 (360,480);
+    public Vector2 rotationSensitivity = new Vector2 (0.1f,0.2f);
     void Start ()
     {
-        DragOrbitTouchScript.deltaRatioChange += Rotate;
+        DragOrbitTouchScript.mouseMovementDeltaChange += Rotate;
     }
     private void Rotate (Vector2 delta)
     {
-        rotation.x = rotationSensitivity.x * delta.x;
-        rotation.y = rotationSensitivity.y * delta.y;
+        rotation.y += rotationSensitivity.x * delta.x;
+        rotation.x -= rotationSensitivity.y * delta.y;
     }
 
     public override Vector3 Apply(Vector3 point)

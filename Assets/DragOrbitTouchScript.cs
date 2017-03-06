@@ -11,12 +11,15 @@ public class DragOrbitTouchScript : MonoBehaviour {
 	[SerializeField]
 	Vector2 delta;
 	Vector2 deltaScreenRatio; // Ratio in ratio to the screen size
+	Vector2 mouseMovementDelta;
+	Vector2 lastFrameInputPosition;
 	[SerializeField]
 	bool touching;
 
 	public delegate void OnDeltaChange(Vector2 delta);
 	public static event OnDeltaChange deltaChange;
 	public static event OnDeltaChange deltaRatioChange;
+	public static event OnDeltaChange mouseMovementDeltaChange;
 
 	// Use this for initialization
 	void Start () 
@@ -44,9 +47,22 @@ public class DragOrbitTouchScript : MonoBehaviour {
 
 		if (touching)
 		{
+			currentInputPos = FetchCurrentInputPosition();
 			delta = currentInputPos - startInputPos;
 			deltaScreenRatio = new Vector2 ((float)System.Math.Round(delta.x/Screen.width,2) , 
 											(float)System.Math.Round(delta.y/Screen.height,2));
+			mouseMovementDelta = currentInputPos - lastFrameInputPosition;
+			lastFrameInputPosition = currentInputPos;
+			NotifyListeners();
+		}
+	}
+	// ---------------------- Helper Functions --------------------- //
+	Vector2 FetchCurrentInputPosition()
+	{
+		return new Vector2(Input.mousePosition.x,Input.mousePosition.y);
+	}
+	void NotifyListeners()
+	{
 			if (deltaChange != null)
 			{
 				deltaChange(delta);
@@ -55,18 +71,18 @@ public class DragOrbitTouchScript : MonoBehaviour {
 			{
 				deltaRatioChange(deltaScreenRatio);
 			}
-			currentInputPos = FetchCurrentInputPosition();
-		}
-	}
-	Vector2 FetchCurrentInputPosition()
-	{
-		return new Vector2(Input.mousePosition.x,Input.mousePosition.y);
-	}
+			if (mouseMovementDeltaChange != null)
+			{
+				mouseMovementDeltaChange(mouseMovementDelta);
+			}
+	}	
 	void ResetValues()
 	{
 		startInputPos = Vector2.zero;
 		currentInputPos = Vector2.zero;
 		delta = Vector2.zero;
 		deltaScreenRatio = Vector2.zero;
+		mouseMovementDelta = Vector2.zero;
+		lastFrameInputPosition = Vector2.zero;
 	}
 }
