@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class TransformationGrid : MonoBehaviour {
 
+    public Transform parentTransform;
     public Transform prefab;
     public bool changeColorBasedOnResolution;
     public int gridResolution = 10;
@@ -57,6 +58,10 @@ public class TransformationGrid : MonoBehaviour {
     Transform CreateGridPoint(int x, int y, int z)
     {
         Transform point = Instantiate<Transform>(prefab);
+        if(parentTransform)
+        {
+            point.parent = parentTransform;
+        }
         point.localPosition = GetCoordinates(x, y, z);
         if (changeColorBasedOnResolution)
         {
