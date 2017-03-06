@@ -5,6 +5,16 @@ using UnityEngine;
 public class RotationTransform : Transformation {
 
     public Vector3 rotation;
+    public Vector2 rotationSensitivity = new Vector2 (360,480);
+    void Start ()
+    {
+        DragOrbitTouchScript.deltaRatioChange += Rotate;
+    }
+    private void Rotate (Vector2 delta)
+    {
+        rotation.x = rotationSensitivity.x * delta.x;
+        rotation.y = rotationSensitivity.y * delta.y;
+    }
 
     public override Vector3 Apply(Vector3 point)
     {
