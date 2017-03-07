@@ -8,14 +8,7 @@ public class RingBehaviour : MonoBehaviour {
 
 	public bool CombineRings (RingData other)
 	{
-		if (other.Outer == true && currentRingData.Outer == true)
-		{
-			return false;
-		}
-		else if (other.Outer != currentRingData.Outer)
-		{
-
-		}
+        return false;
 	}
 	// Use this for initialization
 	void Start () {

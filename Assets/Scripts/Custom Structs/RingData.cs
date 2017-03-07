@@ -3,5 +3,5 @@ using System.Collections.Generic;
 using UnityEngine;
 
  public struct RingData {
-     bool Outer,Middle,Inner;
+     public bool Outer,Middle,Inner;
  }

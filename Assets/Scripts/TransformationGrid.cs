@@ -65,11 +65,11 @@ public class TransformationGrid : MonoBehaviour {
         point.localPosition = GetCoordinates(x, y, z);
         if (changeColorBasedOnResolution)
         {
-            point.GetComponent<MeshRenderer>().material.color = new Color(
+            point.GetComponent<SpriteRenderer>().color = new Color(
                 (float)x / gridResolution,
                 (float)y / gridResolution,
                 (float)z / gridResolution
-            );
+            ); 
         }
         return point;
     }
