@@ -12,6 +12,7 @@ public class TransformationGrid : MonoBehaviour {
     Matrix4x4 transformation;
 
     Transform[] grid;
+    List<ReferencePointBehaviour> gridComponents;
 
     void Awake()
     {
@@ -28,6 +29,10 @@ public class TransformationGrid : MonoBehaviour {
             }
         }
     }
+    void Start()
+    {
+        transform.position = Vector3.zero;
+    } 
     void Update()
     {
         UpdateTransformation();
