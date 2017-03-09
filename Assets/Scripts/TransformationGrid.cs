@@ -29,10 +29,19 @@ public class TransformationGrid : MonoBehaviour {
                 }
             }
         }
-        foreach (ReferencePointBehaviour gComponent in Nodes)
+
+        for (int i = 0, z = 0; z < gridResolution; z++)
         {
-            gComponent.FindNeighbours(Nodes,gridResolution); // Since the grid has already been created, have each node find neighbours in the grid.
+            for (int y = 0; y < gridResolution; y++)
+            {
+                for (int x = 0; x < gridResolution; x++, i++)
+                {
+                    //Debug.Log(x+", "+y+", "+z);
+                    Nodes[x, y, z].FindNeighbours(Nodes,gridResolution);
+                }
+            }
         }
+    
     }
     void Start()
     {
@@ -73,6 +82,7 @@ public class TransformationGrid : MonoBehaviour {
             ReferencePointBehaviour prefabComponent = prefab.GetComponent(typeof(ReferencePointBehaviour)) as ReferencePointBehaviour;
             prefabComponent.SetIndex(x, y, z);
             Nodes[x,y,z] = prefabComponent;
+            //Debug.Log(Nodes[x,y,z].gameObject.name);
         }
         else
         {
