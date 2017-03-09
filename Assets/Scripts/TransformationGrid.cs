@@ -11,22 +11,27 @@ public class TransformationGrid : MonoBehaviour {
     List<Transformation> transformations;
     Matrix4x4 transformation;
 
-    Transform[] grid;
-    List<ReferencePointBehaviour> gridComponents;
+    Transform[] transformGrid;
+    ReferencePointBehaviour[,,] Nodes;
 
     void Awake()
     {
+        Nodes = new ReferencePointBehaviour[gridResolution, gridResolution, gridResolution];
         transformations = new List<Transformation>();
-        grid = new Transform[gridResolution * gridResolution * gridResolution];
+        transformGrid = new Transform[gridResolution * gridResolution * gridResolution];
         for (int i = 0, z = 0; z < gridResolution; z++)
         {
             for (int y = 0; y < gridResolution; y++)
             {
                 for (int x = 0; x < gridResolution; x++, i++)
                 {
-                    grid[i] = CreateGridPoint(x, y, z);
+                    transformGrid[i] = CreateGridPoint(x, y, z);
                 }
             }
+        }
+        foreach (ReferencePointBehaviour gComponent in Nodes)
+        {
+            gComponent.FindNeighbours(Nodes,gridResolution); // Since the grid has already been created, have each node find neighbours in the grid.
         }
     }
     void Start()
@@ -43,7 +48,7 @@ public class TransformationGrid : MonoBehaviour {
             {
                 for (int x = 0; x < gridResolution; x++, i++)
                 {
-                    grid[i].localPosition = TransformPoint(x, y, z);
+                    transformGrid[i].localPosition = TransformPoint(x, y, z);
                 }
             }
         }
@@ -63,11 +68,22 @@ public class TransformationGrid : MonoBehaviour {
     Transform CreateGridPoint(int x, int y, int z)
     {
         Transform point = Instantiate<Transform>(prefab);
+        if (prefab.GetComponent(typeof (ReferencePointBehaviour)) != null)
+        {
+            ReferencePointBehaviour prefabComponent = prefab.GetComponent(typeof(ReferencePointBehaviour)) as ReferencePointBehaviour;
+            prefabComponent.SetIndex(x, y, z);
+            Nodes[x,y,z] = prefabComponent;
+        }
+        else
+        {
+            Debug.Log("PREFAB ATTACHED DOESN'T HAVE REFERENCEPOINTBEHAVIOUR ATTACHED!");
+        }
         if(parentTransform)
         {
             point.parent = parentTransform;
         }
         point.localPosition = GetCoordinates(x, y, z);
+
         if (changeColorBasedOnResolution)
         {
             point.GetComponent<SpriteRenderer>().color = new Color(

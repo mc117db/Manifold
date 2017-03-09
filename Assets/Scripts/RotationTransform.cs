@@ -13,7 +13,7 @@ public class RotationTransform : Transformation {
     private void Rotate (Vector2 delta)
     {
         rotation.y += rotationSensitivity.x * delta.x;
-        rotation.x -= rotationSensitivity.y * delta.y;
+        rotation.x += rotationSensitivity.y * delta.y;
     }
 
     public override Vector3 Apply(Vector3 point)
