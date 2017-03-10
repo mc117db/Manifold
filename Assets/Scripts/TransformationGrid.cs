@@ -7,12 +7,12 @@ public class TransformationGrid : MonoBehaviour {
     public Transform parentTransform;
     public Transform prefab;
     public bool changeColorBasedOnResolution;
-    public int gridResolution = 10;
+    public int gridResolution = 3;
     List<Transformation> transformations;
     Matrix4x4 transformation;
 
     Transform[] transformGrid;
-    ReferencePointBehaviour[,,] Nodes;
+    ReferencePointBehaviour[ , , ] Nodes;
 
     void Awake()
     {
@@ -29,19 +29,6 @@ public class TransformationGrid : MonoBehaviour {
                 }
             }
         }
-
-        for (int i = 0, z = 0; z < gridResolution; z++)
-        {
-            for (int y = 0; y < gridResolution; y++)
-            {
-                for (int x = 0; x < gridResolution; x++, i++)
-                {
-                    //Debug.Log(x+", "+y+", "+z);
-                    Nodes[x, y, z].FindNeighbours(Nodes,gridResolution);
-                }
-            }
-        }
-    
     }
     void Start()
     {
@@ -82,7 +69,7 @@ public class TransformationGrid : MonoBehaviour {
             ReferencePointBehaviour prefabComponent = prefab.GetComponent(typeof(ReferencePointBehaviour)) as ReferencePointBehaviour;
             prefabComponent.SetIndex(x, y, z);
             Nodes[x,y,z] = prefabComponent;
-            //Debug.Log(Nodes[x,y,z].gameObject.name);
+            Debug.Log(Nodes[x,y,z].gameObject.name);
         }
         else
         {

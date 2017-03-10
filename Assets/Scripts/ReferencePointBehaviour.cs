@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ReferencePointBehaviour : MonoBehaviour {
-	public List<ReferencePointBehaviour> neighbours = new List<ReferencePointBehaviour>();
-    public int[] indexPointNumber = new int[3];
+    public static List<ReferencePointBehaviour> allNodes = new List<ReferencePointBehaviour>();
+    public List<ReferencePointBehaviour> neighbours = new List<ReferencePointBehaviour>();
+    public int Xcoor, Ycoor, Zcoor;
     int totalNumberOfNeighoursFound = 0;
 
     public Vector3 targetPosition;
@@ -12,18 +13,27 @@ public class ReferencePointBehaviour : MonoBehaviour {
 
 	void Start()
     {
+        if (!allNodes.Contains(this))
+        {
+            allNodes.Add(this);
+        }
         neighbours = new List<ReferencePointBehaviour>();
+        FindNeighbours();
     }
 	private void AddNeighbour( ReferencePointBehaviour neighbour)
 	{
 		neighbours.Add(neighbour);
 	}
-    public void FindNeighbours(ReferencePointBehaviour[,,] grid,int maxRes)
+
+    public void FindNeighbours()
     {
+        int maxRes = 3;
+        Debug.Log(gameObject.name + " is looking for neighbours");
+        Debug.Log(allNodes.Count);
         totalNumberOfNeighoursFound = 0;
-        int row = indexPointNumber[0];
-        int col = indexPointNumber[1];
-        int dep = indexPointNumber[2];
+        int row = Xcoor;
+        int col = Ycoor;
+        int dep = Zcoor;
         
         int START_OF_GRID = 0; // This determines search space
         int xStart  = Mathf.Max( row - 1, START_OF_GRID);
@@ -39,22 +49,31 @@ public class ReferencePointBehaviour : MonoBehaviour {
             {
                 for ( int curZ = zStart; curZ <= zFinish; curZ++ ) 
                 {
-                    if (!(curX==row && curY==col && curZ == dep))
-                    {
-                        Debug.Log("WHY");
-                        AddNeighbour(grid[curX,curY,curZ]);
-                        totalNumberOfNeighoursFound++;
-                    }
+                    if (curX==row && curY == col && curZ == dep)
+                        {
+                            break;
+                        }
+                        foreach (ReferencePointBehaviour repPoint in allNodes)
+                        {
+                           if (repPoint.Xcoor == curX && repPoint.Ycoor == curY && repPoint.Zcoor == curZ)
+                            {
+                               AddNeighbour(repPoint);
+                               totalNumberOfNeighoursFound++;
+                            }
+                        }  
                 }   
             }
         }
+
         Debug.Log(gameObject.name + " has "+totalNumberOfNeighoursFound+" neighbours");
     }
 
     public void SetIndex (int x,int y,int z)
     {
-        indexPointNumber = new int[3] {x,y,z};
-        gameObject.name = "Node: " + indexPointNumber[0]+","+indexPointNumber[1]+","+indexPointNumber[2];
+        Xcoor = x;
+        Ycoor = y;
+        Zcoor = z;
+        gameObject.name = "Node: " + Xcoor+","+Ycoor+","+Zcoor;
     }
 	
 	
