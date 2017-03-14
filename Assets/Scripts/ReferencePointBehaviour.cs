@@ -88,7 +88,6 @@ public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPoin
     {
         if (RingDragBehaviour.dragging)
         {
-
         }
     }
 
