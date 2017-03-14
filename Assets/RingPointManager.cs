@@ -8,10 +8,12 @@ public class RingPointManager : MonoBehaviour, IDropHandler {
 
     GameObject Ring;
     static float localRingSize = 1.5f;
+    public delegate void onRingDrop();
+    public static event onRingDrop RingDropEvent;
 	
     public bool ReceiveRing(ref RingDragBehaviour dRing)
     {
-        //TODO get argument to accept a ring component reference rather than gameobject
+        //TODO get argument to accept a ring component reference rather than gameobject (DONE)
         if (dRing)
         {
             // TODO Add conditional here that checks ring between current ring and ring to be accepted, return false if cannot fit.
@@ -33,5 +35,9 @@ public class RingPointManager : MonoBehaviour, IDropHandler {
         Ring.transform.parent = transform;
         Ring.transform.localScale = Vector3.one * localRingSize;
         Ring.transform.localPosition = Vector3.zero;
+        if (RingDropEvent != null)
+        {
+            RingDropEvent();
+        }
     }
 }

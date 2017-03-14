@@ -69,7 +69,7 @@ public class TransformationGrid : MonoBehaviour {
             ReferencePointBehaviour prefabComponent = prefab.GetComponent(typeof(ReferencePointBehaviour)) as ReferencePointBehaviour;
             prefabComponent.SetIndex(x, y, z);
             Nodes[x,y,z] = prefabComponent;
-            Debug.Log(Nodes[x,y,z].gameObject.name);
+            //Debug.Log(Nodes[x,y,z].gameObject.name);
         }
         else
         {

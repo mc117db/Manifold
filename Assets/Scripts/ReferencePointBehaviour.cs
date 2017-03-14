@@ -1,8 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class ReferencePointBehaviour : MonoBehaviour {
+public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPointerExitHandler
+{
     public static List<ReferencePointBehaviour> allNodes = new List<ReferencePointBehaviour>();
     public List<ReferencePointBehaviour> neighbours = new List<ReferencePointBehaviour>();
     public int Xcoor, Ycoor, Zcoor;
@@ -80,4 +83,17 @@ public class ReferencePointBehaviour : MonoBehaviour {
 	void Update () {
         //transform.position = Vector3.MoveTowards(transform.position,targetPosition,lerpSpeed*Time.deltaTime);
 	}
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (RingDragBehaviour.dragging)
+        {
+
+        }
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        throw new NotImplementedException();
+    }
 }
