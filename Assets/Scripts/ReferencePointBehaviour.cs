@@ -76,7 +76,6 @@ public class ReferencePointBehaviour : MonoBehaviour {
         gameObject.name = "Node: " + Xcoor+","+Ycoor+","+Zcoor;
     }
 	
-	
 	// Update is called once per frame
 	void Update () {
         //transform.position = Vector3.MoveTowards(transform.position,targetPosition,lerpSpeed*Time.deltaTime);
