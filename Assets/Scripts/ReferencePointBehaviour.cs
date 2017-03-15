@@ -31,8 +31,8 @@ public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPoin
     public void FindNeighbours()
     {
         int maxRes = 3;
-        Debug.Log(gameObject.name + " is looking for neighbours");
-        Debug.Log(allNodes.Count);
+        //Debug.Log(gameObject.name + " is looking for neighbours");
+        //Debug.Log(allNodes.Count);
         totalNumberOfNeighoursFound = 0;
         int row = Xcoor;
         int col = Ycoor;
@@ -68,7 +68,7 @@ public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPoin
             }
         }
 
-        Debug.Log(gameObject.name + " has "+totalNumberOfNeighoursFound+" neighbours");
+        //Debug.Log(gameObject.name + " has "+totalNumberOfNeighoursFound+" neighbours");
     }
 
     public void SetIndex (int x,int y,int z)
@@ -93,6 +93,7 @@ public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPoin
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        return;
         throw new NotImplementedException();
     }
 }

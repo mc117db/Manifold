@@ -11,6 +11,7 @@ public class RingDragBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandler,
     Vector3 _offsetToMouse;
     float _zDistanceToCamera;
     public static bool dragging;
+
     [SerializeField]
 
     #region Interface Implementations

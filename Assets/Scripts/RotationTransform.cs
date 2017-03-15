@@ -12,6 +12,13 @@ public class RotationTransform : Transformation {
     }
     private void Rotate (Vector2 delta)
     {
+        if (delta.magnitude > 100)
+        {
+            // This filters random noise from delta
+            // Not really elegant way of doing this.. but it works
+            return;
+        }
+        //Debug.Log(delta);
         rotation.y += rotationSensitivity.x * delta.x;
         rotation.x += rotationSensitivity.y * delta.y;
     }

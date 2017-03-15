@@ -30,12 +30,11 @@ public class RingPointManager : MonoBehaviour, IDropHandler {
 
     public void OnDrop(PointerEventData eventData)
     {
-        Debug.Log("DROP");
+        //Debug.Log("DROP");
         Ring = RingDragBehaviour.DraggedInstance;
         Ring.transform.parent = transform;
         Ring.transform.localScale = Vector3.one * localRingSize;
         Ring.transform.localPosition = Vector3.zero;
-        if (RingDropEvent != null)
         {
             RingDropEvent();
         }

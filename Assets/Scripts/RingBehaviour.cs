@@ -5,8 +5,51 @@ using UnityEngine;
 public class RingBehaviour : MonoBehaviour {
 
 	RingData currentRingData;
+    [SerializeField]
+    GameObject outer, middle, inner;
 
-	public bool CombineRings (RingData other)
+    public RingData CurrentRingData
+    {
+        get
+        {
+            return currentRingData;
+        }
+
+        set
+        {
+            currentRingData = value;
+            PaintRings();
+        }
+    }
+    void PaintRings()
+    {
+        if (!currentRingData.Outer)
+        {
+            outer.SetActive(false);
+        }
+        else
+        {
+            outer.GetComponent<SpriteRenderer>().color = currentRingData.ringColors[0];
+        }
+        if (!currentRingData.Middle)
+        {
+            middle.SetActive(false);
+        }
+        else
+        {
+            middle.GetComponent<SpriteRenderer>().color = currentRingData.ringColors[1];
+        }
+        if (!currentRingData.Inner)
+        {
+            inner.SetActive(false);
+        }
+        else
+        {
+            inner.GetComponent<SpriteRenderer>().color = currentRingData.ringColors[2];
+        }
+    }
+
+    public bool CombineRings (RingData other)
 	{
         return false;
 	}

@@ -13,6 +13,7 @@ public class RingFactory : MonoBehaviour {
 	void Start () {
         RingPointManager.RingDropEvent += UpdateState;
         CreateNewSet(); //TODO This will be called by the GameManager later
+        ColorManager.instance.UpdateLevel();
     }
 	
 	// Update is called once per frame
@@ -35,9 +36,23 @@ public class RingFactory : MonoBehaviour {
         for (int i = -1; i < 2; i++)
         {
             GameObject ring = Instantiate(RingPrefab);
+            ring.GetComponent<RingBehaviour>().CurrentRingData = GenerateNewRingData();
             ring.transform.parent = transform;
             ring.transform.localPosition = new Vector3(i * horizontalOffset, i == 0 ? middleUpperOffset : 0, 0);
         }
         ringsInDock = 3;
+    }
+    RingData GenerateNewRingData ()
+    {
+        RingData data = new RingData();
+        data.Inner = Random.value < 0.5 ? true : false;
+        data.Middle = Random.value < 0.5 ? true : false;
+        data.Outer = Random.value < 0.5 ? true : false;
+        for (int i = 0; i < 3; i++)
+        {
+            Debug.Log("FETCHING");
+            data.ringColors.Add(ColorManager.instance.FetchColor());
+        }
+        return data;
     }
 }
