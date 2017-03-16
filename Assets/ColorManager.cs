@@ -43,7 +43,7 @@ public class ColorManager : MonoBehaviour {
         {
             foreach (Color colr in registeredLevelColors[i].colorsInLevel)
             {
-                Debug.Log("ADD");
+                //Debug.Log("ADD");
                 activeColors.Add(colr);
             }
         }

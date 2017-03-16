@@ -31,7 +31,7 @@ public class RingFactory : MonoBehaviour {
     void CreateNewSet()
     {
         Debug.Log("REFRESH");
-        //TODO use pooling system to create the object
+        //TODO Use pooling system to create the object
         for (int i = -1; i < 2; i++)
         {
             GameObject ring = Instantiate(RingPrefab);   
@@ -47,7 +47,8 @@ public class RingFactory : MonoBehaviour {
         data.Inner = Random.value < 0.5 ? true : false;
         data.Middle = Random.value < 0.5 ? true : false;
         data.Outer = Random.value < 0.5 ? true : false;
-        if (!(data.Inner&&data.Middle&&data.Outer))
+        #region EDGE CASES
+        if (!(data.Inner && data.Middle && data.Outer))
         {
             float chance = Random.value;
             if (chance < 0.33)
@@ -63,6 +64,24 @@ public class RingFactory : MonoBehaviour {
                 data.Outer = true;
             }
         }
+        if (data.Inner && data.Middle && data.Outer)
+        {
+            float chance = Random.value;
+            if (chance < 0.33f)
+            {
+                data.Inner = false;
+            }
+            else if (chance < 0.66f)
+            {
+                data.Middle = false;
+            }
+            else
+            {
+                data.Outer = false;
+            }
+        } 
+        #endregion
+        //TODO Address case when adjacent tiers have the same color (not important but good to have)
         data.ringColors = new List<Color>();
         for (int i = 0; i < 3; i++)
         {

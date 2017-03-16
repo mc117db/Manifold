@@ -11,19 +11,34 @@ public class RingDragBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandler,
     Vector3 _offsetToMouse;
     float _zDistanceToCamera;
     public static bool dragging;
+    private bool canDrag;
 
-    [SerializeField]
+    public bool CanDrag
+    {
+        get
+        {
+            return canDrag;
+        }
+
+        set
+        {
+            canDrag = value;
+            gameObject.GetComponent<RingBehaviour>().isInPlace = canDrag;
+        }
+    }
 
     #region Interface Implementations
 
     void Start ()
     {
-
+        CanDrag = true;
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (DraggedInstance == null)
+        if (!CanDrag)
         {
+            return;
+        }
             DraggedInstance = gameObject;
             _startPosition = transform.position;
             _zDistanceToCamera = Mathf.Abs(_startPosition.z - Camera.main.transform.position.z);
@@ -32,11 +47,15 @@ public class RingDragBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandler,
                 new Vector3(Input.mousePosition.x, Input.mousePosition.y, _zDistanceToCamera)
             );
             dragging = true;
-        }
+        
     }
 
     public void OnDrag(PointerEventData eventData)
     {
+        if (!CanDrag)
+        {
+            return;
+        }
         if (Input.touchCount > 1)
             return;
 
@@ -48,6 +67,12 @@ public class RingDragBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandler,
     public void OnEndDrag(PointerEventData eventData)
     {
         dragging = false;
+        if (!CanDrag)
+        {
+            // This means its attached to something
+            return;
+        }
+        transform.position = _startPosition;  
         DraggedInstance = null;
         _offsetToMouse = Vector3.zero;
     }
