@@ -7,6 +7,8 @@ public class RingFactory : MonoBehaviour {
     public GameObject RingPrefab;
     public float horizontalOffset = 2f;
     public float middleUpperOffset = 3f;
+    public delegate void onRefreshSet();
+    public static event onRefreshSet onRefreshSetEvent;
     // Use this for initialization
     [SerializeField]
     int ringsInDock = 3;
@@ -24,7 +26,11 @@ public class RingFactory : MonoBehaviour {
     {
         ringsInDock--;
         if (ringsInDock <= 0)
-        {    
+        {
+            if (onRefreshSetEvent != null)
+            {
+                onRefreshSetEvent();
+            }
             CreateNewSet();
         }
     }

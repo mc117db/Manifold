@@ -12,6 +12,8 @@ public class RingDragBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandler,
     float _zDistanceToCamera;
     public static bool dragging;
     private bool canDrag;
+    public delegate void failDrag();
+    public event failDrag failDragEvent;
 
     public bool CanDrag
     {
@@ -71,6 +73,10 @@ public class RingDragBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandler,
         {
             // This means its attached to something
             return;
+        }
+        if (failDragEvent != null)
+        {
+            failDragEvent();
         }
         transform.position = _startPosition;  
         DraggedInstance = null;

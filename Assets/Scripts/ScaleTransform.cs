@@ -4,9 +4,27 @@ using UnityEngine;
 
 public class ScaleTransform : Transformation
 {
-
+    private float size;
     public Vector3 scale;
+    //TODO shakeOnStagingAreaEvent might need to be shifted to a settings manager in the future.
+    public bool shakeOnStagingAreaEvent = true;
+    public void Start()
+    {
 
+    }
+    public float Size
+    {
+        get
+        {
+            return size;
+        }
+
+        set
+        {
+            size = value;
+            scale = new Vector3(1,1,1) * value;
+        }
+    }
     public override Vector3 Apply(Vector3 point)
     {
         point.x *= scale.x;
@@ -26,5 +44,7 @@ public class ScaleTransform : Transformation
             return matrix;
         }
     }
+
+   
 }
 
