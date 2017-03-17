@@ -23,7 +23,7 @@ public class RingDragBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandler,
         set
         {
             canDrag = value;
-            gameObject.GetComponent<RingBehaviour>().isInPlace = canDrag;
+            gameObject.GetComponent<RingBehaviour>().IsInPlace = canDrag;
         }
     }
 

@@ -7,7 +7,9 @@ public class RingBehaviour : MonoBehaviour {
 	RingData currentRingData;
     [SerializeField]
     GameObject outer, middle, inner;
-    public bool isInPlace;
+    bool isInPlace;
+    public delegate void stateChange();
+    public event stateChange stateChangeEvent;
 
     public RingData CurrentRingData
     {
@@ -20,6 +22,19 @@ public class RingBehaviour : MonoBehaviour {
         {
             currentRingData = value;
             PaintRings();
+        }
+    }
+    public bool IsInPlace{
+        get{
+            return isInPlace;
+        }
+        set
+        {
+            isInPlace = value;
+            if(isInPlace && stateChangeEvent != null)
+            {
+                stateChangeEvent();
+            }
         }
     }
     void PaintRings()
@@ -99,6 +114,7 @@ public class RingBehaviour : MonoBehaviour {
             //Debug.Log("CAN COMBINE!");
             currentRingData = newState;
             PaintRings();
+            stateChangeEvent();
             return true;
         }
     }
