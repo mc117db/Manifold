@@ -9,6 +9,7 @@ public class ChromaticAberration : MonoBehaviour {
 	float chromaticAberration = 1.0f;
     public bool onTheScreenEdges = true;
     public bool shakeOnStagingAreaEvent = true;
+    public bool shiftOnDragEvent = true;
     Vector3 shakeVector = new Vector3();
     public float shakeDuration = 0.2f;
     public float shakeStrength = 10f;
@@ -30,6 +31,7 @@ public class ChromaticAberration : MonoBehaviour {
 		}
         //Subscribe to RingFactory
         RingFactory.onRefreshSetEvent += ShakeScreen;
+        DragOrbitTouchScript.deltaChange += DragEffect;
 	}
     public void ShakeScreen()
     {
@@ -39,10 +41,19 @@ public class ChromaticAberration : MonoBehaviour {
             shakeVibrationAmount,
             shakeRandomness, false);
     }
+    public void DragEffect(Vector2 delta)
+    {
+        if (shiftOnDragEvent)
+        shakeVector = new Vector2(delta.x/100, delta.y/100);
+    }
 
     public void Update()
     {
         chromaticAberration = shakeVector.magnitude;
+        if (shakeVector.magnitude != 0)
+        {
+            shakeVector = Vector3.MoveTowards(shakeVector, Vector3.zero, 50f * Time.deltaTime);
+        }
     }
 
     public void OnRenderImage(RenderTexture inTexture, RenderTexture outTexture) {
