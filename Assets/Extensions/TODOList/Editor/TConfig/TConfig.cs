@@ -14,6 +14,7 @@ public class TConfig  {
 		AddTag ("CRITICAL",  "#CRITICAL");
 		AddTag ("REFACTOR", "#REFACTOR");
 		AddTag ("HACK", "#MESS");
+        AddTag("POSTMORTEM", "#POST");
 	}
 
 

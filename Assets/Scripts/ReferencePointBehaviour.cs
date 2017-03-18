@@ -6,7 +6,6 @@ using UnityEngine.EventSystems;
 
 public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPointerExitHandler
 {
-    public static List<ReferencePointBehaviour> allNodes = new List<ReferencePointBehaviour>();
     public List<ReferencePointBehaviour> neighbours = new List<ReferencePointBehaviour>();
     public int Xcoor, Ycoor, Zcoor;
     int totalNumberOfNeighoursFound = 0;
@@ -16,10 +15,6 @@ public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPoin
 
 	void Start()
     {
-        if (!allNodes.Contains(this))
-        {
-            allNodes.Add(this);
-        }
         neighbours = new List<ReferencePointBehaviour>();
         FindNeighbours();
     }
@@ -39,8 +34,8 @@ public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPoin
         int dep = Zcoor;
         
         int START_OF_GRID = 0; // This determines search space
-        int xStart  = Mathf.Max( row - 1, START_OF_GRID);
-        int xFinish = Mathf.Min( row + 1, maxRes - 1);
+        int xStart  = Mathf.Max( row - 1, START_OF_GRID); // Prevent searching outside of 0
+        int xFinish = Mathf.Min( row + 1, maxRes - 1); // Prevent searching outside of the max resolution
         int yStart  = Mathf.Max( col - 1, START_OF_GRID);
         int yFinish = Mathf.Min( col + 1, maxRes - 1);
         int zStart = Mathf.Max( dep - 1, START_OF_GRID);
@@ -52,23 +47,18 @@ public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPoin
             {
                 for ( int curZ = zStart; curZ <= zFinish; curZ++ ) 
                 {
-                    if (curX==row && curY == col && curZ == dep)
+                    if (!(curX==row && curY == col && curZ == dep))
                         {
-                            break;
-                        }
-                        foreach (ReferencePointBehaviour repPoint in allNodes)
-                        {
-                           if (repPoint.Xcoor == curX && repPoint.Ycoor == curY && repPoint.Zcoor == curZ)
-                            {
-                               AddNeighbour(repPoint);
-                               totalNumberOfNeighoursFound++;
-                            }
-                        }  
+                        // Dont add itself
+                        AddNeighbour(TransformationGrid.NODES[curX, curY, curZ]);
+                        totalNumberOfNeighoursFound++;
+                    }
+                    
                 }   
             }
         }
 
-        //Debug.Log(gameObject.name + " has "+totalNumberOfNeighoursFound+" neighbours");
+        Debug.Log(gameObject.name + " has "+totalNumberOfNeighoursFound+" neighbours");
     }
 
     public void SetIndex (int x,int y,int z)

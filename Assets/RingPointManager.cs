@@ -65,6 +65,6 @@ public class RingPointManager : MonoBehaviour, IDropHandler {
         Ring.transform.localPosition = Vector3.zero;
         Ring.IsInPlace = true;
 
-        RingDropEvent();
+        RingDropEvent();  
     }
 }

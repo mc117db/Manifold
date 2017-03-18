@@ -12,15 +12,7 @@ public class TransformationGrid : MonoBehaviour {
     Matrix4x4 transformation;
 
     Transform[] transformGrid;
-    static ReferencePointBehaviour[ , , ] Nodes;
-    public static ReferencePointBehaviour[,,] NODES
-    {
-        get
-        {
-            return Nodes;
-        }
-        // NO SETTER!
-    }
+    ReferencePointBehaviour[ , , ] Nodes;
 
     void Awake()
     {
@@ -39,6 +31,12 @@ public class TransformationGrid : MonoBehaviour {
                 }
             }
         }
+        foreach (ReferencePointBehaviour nd in Nodes)
+        {
+            Debug.Log("Node:" + nd.Xcoor + nd.Ycoor + nd.Zcoor);
+        }
+        Debug.Log("Node: 2,1,0 is " + Nodes[2, 1, 0].Xcoor + Nodes[2, 1, 0].Ycoor + Nodes[2, 1, 0].Zcoor);
+        Debug.Log("Node: 1,1,0 is " + Nodes[1, 1, 0].Xcoor + Nodes[1, 1, 0].Ycoor + Nodes[1, 1, 0].Zcoor);
     }
     void Start()
     {
@@ -77,10 +75,11 @@ public class TransformationGrid : MonoBehaviour {
         if (point.GetComponent(typeof (ReferencePointBehaviour)) != null)
         {
             Debug.Log("J: "+x + y + z);
-            //POSTMORTEM The Multidimensonal array conundrum, Last time I had a bug over here that the Nodes always get populated with a 2,2,2 index node, turns out that I was accessing prefab instead of point transform, simple error but big mistake
             ReferencePointBehaviour prefabComponent = point.GetComponent(typeof(ReferencePointBehaviour)) as ReferencePointBehaviour;
             prefabComponent.SetIndex(x, y, z);
-            Nodes[x, y, z] = prefabComponent;
+            Debug.Log("SOMETHING:"+ prefabComponent.Xcoor + prefabComponent.Ycoor + prefabComponent.Zcoor);
+            Nodes[x,y,z] = prefabComponent;
+            Debug.Log("END RESULT:" + Nodes[x, y, z].Xcoor + Nodes[x, y, z].Ycoor + Nodes[x, y, z].Zcoor);
 
             //Debug.Log(Nodes[x,y,z].gameObject.name);
         }
