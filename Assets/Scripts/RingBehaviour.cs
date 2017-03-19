@@ -39,13 +39,18 @@ public class RingBehaviour : MonoBehaviour {
     }
     void PaintRings()
     {
+        if (ColorManager.instance == null)
+        {
+            Debug.Log("NO COLORMANAGER TO FETCH COLOR DATA FROM!");
+        }
         if (!currentRingData.Outer)
         {
             outer.SetActive(false);
         }
         else
         {
-            outer.GetComponent<SpriteRenderer>().color = currentRingData.ringColors[0];
+            outer.GetComponent<SpriteRenderer>().color = ColorManager.instance.FetchColorInformation(
+            currentRingData.ringColors[0]);
         }
         if (!currentRingData.Middle)
         {
@@ -53,7 +58,8 @@ public class RingBehaviour : MonoBehaviour {
         }
         else
         {
-            middle.GetComponent<SpriteRenderer>().color = currentRingData.ringColors[1];
+            middle.GetComponent<SpriteRenderer>().color = ColorManager.instance.FetchColorInformation(
+            currentRingData.ringColors[1]);
         }
         if (!currentRingData.Inner)
         {
@@ -61,7 +67,8 @@ public class RingBehaviour : MonoBehaviour {
         }
         else
         {
-            inner.GetComponent<SpriteRenderer>().color = currentRingData.ringColors[2];
+            inner.GetComponent<SpriteRenderer>().color = ColorManager.instance.FetchColorInformation(
+                currentRingData.ringColors[2]);
         }
     }
 

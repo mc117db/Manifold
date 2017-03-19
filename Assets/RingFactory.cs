@@ -88,10 +88,10 @@ public class RingFactory : MonoBehaviour {
         } 
         #endregion
         //TODO Address case when adjacent tiers have the same color (not important but good to have)
-        data.ringColors = new List<Color>();
+        data.ringColors = new List<ColorIndex>();
         for (int i = 0; i < 3; i++)
         {
-            Color clr = ColorManager.instance.FetchColor();
+            ColorIndex clr = ColorManager.instance.FetchColorIndex();
             //Debug.Log(clr);
             data.ringColors.Add(clr);
         }

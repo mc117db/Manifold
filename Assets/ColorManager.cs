@@ -2,14 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 [System.Serializable]
+public enum ColorIndex
+{
+    Alpha,Bravo,Charlie,Delta,Echo,Fanta,Gamma,Hotel
+}
+[System.Serializable]
+public struct ColorRegistrationData
+{
+    public ColorIndex indentifier;
+    public Color colorToRegister;
+}
+[System.Serializable]
 public struct LevelColors
 {
-    public List<Color> colorsInLevel;
+    public List<ColorIndex> colorsInLevel;
 }
 
 public class ColorManager : MonoBehaviour {
+    public ColorRegistrationData[] colorRegistrationData = new ColorRegistrationData[8];
     public List<LevelColors> registeredLevelColors;
-    public List<Color> activeColors = new List<Color>();
+    public List<ColorIndex> activeColors = new List<ColorIndex>();
     private int currentLevel = 1;
     public static ColorManager instance;
 
@@ -34,6 +46,18 @@ public class ColorManager : MonoBehaviour {
         instance = this;
         UpdateLevel();
     }
+    public Color FetchColorInformation (ColorIndex index)
+    {
+        foreach (ColorRegistrationData data in colorRegistrationData)
+        {
+            if (data.indentifier == index)
+            {
+                return data.colorToRegister;
+            }
+        }
+        Debug.Log("The ColorIndex you are trying to fetch doesn't exist in colorRegistrationData");
+        return new Color();
+    }
     public void UpdateLevel ()
     {
         Debug.Log("Updating Intial colors");
@@ -41,14 +65,14 @@ public class ColorManager : MonoBehaviour {
         Debug.Log("NO OF REGISTERED LEVELS: " + registeredLevelColors.Count);
         for (int i = 0; i < CurrentLevel; i++)
         {
-            foreach (Color colr in registeredLevelColors[i].colorsInLevel)
+            foreach (ColorIndex colr in registeredLevelColors[i].colorsInLevel)
             {
                 //Debug.Log("ADD");
                 activeColors.Add(colr);
             }
         }
     }
-    public Color FetchColor()
+    public ColorIndex FetchColorIndex()
     {
         return activeColors[Random.Range(0, activeColors.Count)];
     }

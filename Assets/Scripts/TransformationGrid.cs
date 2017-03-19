@@ -25,8 +25,8 @@ public class TransformationGrid : MonoBehaviour {
     void Awake()
     {
         Nodes = new ReferencePointBehaviour[gridResolution, gridResolution, gridResolution];
-        Debug.Log("Test "+Nodes.Rank);
-        Debug.Log("Total Number of Items " + Nodes.Length);
+        //Debug.Log("Test "+Nodes.Rank);
+        //Debug.Log("Total Number of Items " + Nodes.Length);
         transformations = new List<Transformation>();
         transformGrid = new Transform[gridResolution * gridResolution * gridResolution];
         for (int i = 0, z = 0; z < gridResolution; z++)
@@ -76,7 +76,7 @@ public class TransformationGrid : MonoBehaviour {
         Transform point = Instantiate<Transform>(prefab);
         if (point.GetComponent(typeof (ReferencePointBehaviour)) != null)
         {
-            Debug.Log("J: "+x + y + z);
+            //Debug.Log("J: "+x + y + z);
             //POSTMORTEM The Multidimensonal array conundrum, Last time I had a bug over here that the Nodes always get populated with a 2,2,2 index node, turns out that I was accessing prefab instead of point transform, simple error but big mistake
             ReferencePointBehaviour prefabComponent = point.GetComponent(typeof(ReferencePointBehaviour)) as ReferencePointBehaviour;
             prefabComponent.SetIndex(x, y, z);
