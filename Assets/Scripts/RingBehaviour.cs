@@ -23,7 +23,7 @@ public class RingBehaviour : MonoBehaviour {
             if (stateChangeEvent != null)
             {
                 stateChangeEvent();
-            }
+            } 
             PaintRings();
         }
     }

@@ -100,6 +100,18 @@ public class RingFactory : MonoBehaviour {
             //Debug.Log(clr);
             data.ringColors.Add(clr);
         }
+        if (!data.Outer)
+        {
+            data.ringColors[0] = ColorIndex.NONE;
+        }
+        if (!data.Middle)
+        {
+            data.ringColors[1] = ColorIndex.NONE;
+        }
+        if (!data.Inner)
+        {
+            data.ringColors[2] = ColorIndex.NONE;
+        }
         return data;
     }
 }
