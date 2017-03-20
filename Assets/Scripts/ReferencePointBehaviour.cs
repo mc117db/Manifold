@@ -57,7 +57,7 @@ public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPoin
             }
         }
 
-        Debug.Log(gameObject.name + " has "+totalNumberOfNeighoursFound+" neighbours");
+        //Debug.Log(gameObject.name + " has "+totalNumberOfNeighoursFound+" neighbours");
     }
     public void SetIndex (int x,int y,int z)
     {
@@ -71,6 +71,7 @@ public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPoin
         int neighbourHasColor = 0;
         for (int i = 0; i < colorcheck.Count; i++)
         {
+            //Debug.Log("CHECKING FOR: "+colorcheck[i].ToString());
             if (colorcheck[i] != ColorIndex.NONE)
             {
                 foreach (ReferencePointBehaviour neighbour in neighbours)
