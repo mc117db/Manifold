@@ -82,6 +82,14 @@ public class RingDragBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandler,
         DraggedInstance = null;
         _offsetToMouse = Vector3.zero;
     }
+    public void OnDragOverAndCombine()
+    {
+        dragging = false;
+        DraggedInstance = null;
+        _offsetToMouse = Vector3.zero;
+        //TODO Refactor for pooling later
+        Destroy(gameObject);
+    }
 
     #endregion
 }

@@ -34,6 +34,11 @@ public class RingFactory : MonoBehaviour {
             CreateNewSet();
         }
     }
+    void SpawnRingAtParent(Transform parentTransform)
+    {
+        GameObject ring = Instantiate(RingPrefab);
+        ring.transform.parent = parentTransform;
+    }
     void CreateNewSet()
     {
         Debug.Log("REFRESH");

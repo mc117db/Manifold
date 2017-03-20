@@ -22,7 +22,6 @@ public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPoin
 	{
 		neighbours.Add(neighbour);
 	}
-
     public void FindNeighbours()
     {
         int maxRes = 3;
@@ -60,7 +59,6 @@ public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPoin
 
         Debug.Log(gameObject.name + " has "+totalNumberOfNeighoursFound+" neighbours");
     }
-
     public void SetIndex (int x,int y,int z)
     {
         Xcoor = x;
@@ -68,7 +66,24 @@ public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPoin
         Zcoor = z;
         gameObject.name = "Node: " + Xcoor+","+Ycoor+","+Zcoor;
     }
-	
+	public void CheckNeighboursForColor(List<ColorIndex> colorcheck)
+    {
+        int neighbourHasColor = 0;
+        for (int i = 0; i < colorcheck.Count; i++)
+        {
+            if (colorcheck[i] != ColorIndex.NONE)
+            {
+                foreach (ReferencePointBehaviour neighbour in neighbours)
+                {
+                    if (neighbour.GetComponent<RingPointManager>().HaveColor(colorcheck[i]))
+                    {
+                        neighbourHasColor++;
+                    }
+                }
+            }
+        }
+        Debug.Log("NEIGHBOURS HAS " + neighbourHasColor + " TO REMOVE!");
+    }
 	// Update is called once per frame
 	void Update () {
         //transform.position = Vector3.MoveTowards(transform.position,targetPosition,lerpSpeed*Time.deltaTime);
@@ -80,7 +95,6 @@ public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPoin
         {
         }
     }
-
     public void OnPointerExit(PointerEventData eventData)
     {
         return;

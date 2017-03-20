@@ -4,7 +4,7 @@ using UnityEngine;
 [System.Serializable]
 public enum ColorIndex
 {
-    Alpha,Bravo,Charlie,Delta,Echo,Fanta,Gamma,Hotel
+    Alpha,Bravo,Charlie,Delta,Echo,Fanta,Gamma,Hotel,NONE
 }
 [System.Serializable]
 public struct ColorRegistrationData

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class RingBehaviour : MonoBehaviour {
-
 	RingData currentRingData;
     [SerializeField]
     GameObject outer, middle, inner;
@@ -21,6 +20,10 @@ public class RingBehaviour : MonoBehaviour {
         set
         {
             currentRingData = value;
+            if (stateChangeEvent != null)
+            {
+                stateChangeEvent();
+            }
             PaintRings();
         }
     }
@@ -51,6 +54,7 @@ public class RingBehaviour : MonoBehaviour {
         {
             outer.GetComponent<SpriteRenderer>().color = ColorManager.instance.FetchColorInformation(
             currentRingData.ringColors[0]);
+            outer.SetActive(true);
         }
         if (!currentRingData.Middle)
         {
@@ -60,6 +64,7 @@ public class RingBehaviour : MonoBehaviour {
         {
             middle.GetComponent<SpriteRenderer>().color = ColorManager.instance.FetchColorInformation(
             currentRingData.ringColors[1]);
+            middle.SetActive(true);
         }
         if (!currentRingData.Inner)
         {
@@ -69,9 +74,9 @@ public class RingBehaviour : MonoBehaviour {
         {
             inner.GetComponent<SpriteRenderer>().color = ColorManager.instance.FetchColorInformation(
                 currentRingData.ringColors[2]);
+            inner.SetActive(true);
         }
     }
-
     public bool CombineRings (RingData other)
 	{
         // Return true if can combine, else return false.
@@ -124,6 +129,31 @@ public class RingBehaviour : MonoBehaviour {
             stateChangeEvent();
             return true;
         }
+    }
+    public void RemoveColor (ColorIndex index)
+    {
+        RingData newState = currentRingData;
+        for (int i = 0; i < newState.ringColors.Count; i++)
+        {
+            if (newState.ringColors[i] == index)
+            {
+                //TODO Add implementation to count color remove over here
+                newState.ringColors[i] = ColorIndex.NONE;
+            }
+        }
+        if (newState.ringColors[0]== ColorIndex.NONE)
+        {
+            newState.Outer = false;
+        }
+        if (newState.ringColors[1] == ColorIndex.NONE)
+        {
+            newState.Middle = false;
+        }
+        if (newState.ringColors[2] == ColorIndex.NONE)
+        {
+            newState.Inner = false;
+        }
+        CurrentRingData = newState;
     }
 	// Use this for initialization
 	void Start () {

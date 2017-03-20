@@ -6,10 +6,15 @@ using UnityEngine.EventSystems;
 
 public class RingPointManager : MonoBehaviour, IDropHandler {
 
+    // Guidelines for this manager
+    // This should not know anything about the overall game state
+    // This should not know its own neighbours
+
     RingBehaviour Ring;
     static float localRingSize = 1.5f;
     public delegate void onRingDrop();
     public static event onRingDrop RingDropEvent; // RingFactory depends on this
+    public event onRingDrop stateChange; // This happens when something changes to current ring
 
     #region OLD IMPLMENTATION
     /*
@@ -31,8 +36,19 @@ public class RingPointManager : MonoBehaviour, IDropHandler {
     } 
     */
     #endregion
-
+    void Start()
+    {
+        stateChange += CheckNeighboursForSimiliarColors;
+    } 
     // IDROPHANDLER IMPLEMENTATION
+    private void CheckNeighboursForSimiliarColors()
+    {
+        if (!Ring)
+        {
+            return;
+        }
+        GetComponent<ReferencePointBehaviour>().CheckNeighboursForColor(Ring.CurrentRingData.ringColors);
+    }
     public void OnDrop(PointerEventData eventData)
     { 
         if (!Ring)
@@ -46,7 +62,10 @@ public class RingPointManager : MonoBehaviour, IDropHandler {
             RingBehaviour otherRing = RingDragBehaviour.DraggedInstance.GetComponent<RingBehaviour>();
             if (Ring.CombineRings(otherRing.CurrentRingData))
             {
-                AcceptRing();
+                //AcceptRing();
+                RingDropEvent();
+                stateChange();
+                GetComponent<RingDragBehaviour>().OnDragOverAndCombine();
             }
             else
             {
@@ -56,6 +75,17 @@ public class RingPointManager : MonoBehaviour, IDropHandler {
         }
         
     }
+    public bool HaveColor(ColorIndex index)
+    {
+        if (!Ring || index == ColorIndex.NONE)
+        {
+            return false;
+        }
+        else
+        {
+            return Ring.CurrentRingData.ringColors.Contains(index);
+        }
+    }
     void AcceptRing()
     {
         Ring = RingDragBehaviour.DraggedInstance.GetComponent<RingBehaviour>();
@@ -64,7 +94,13 @@ public class RingPointManager : MonoBehaviour, IDropHandler {
         Ring.transform.localScale = Vector3.one * localRingSize;
         Ring.transform.localPosition = Vector3.zero;
         Ring.IsInPlace = true;
-
-        RingDropEvent();  
+        if (stateChange != null)
+        {
+            stateChange();
+        }
+        if (RingDropEvent != null)
+        {
+            RingDropEvent();
+        }
     }
 }
