@@ -80,15 +80,61 @@ public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPoin
                     {
                         neighbourHasColor++;
                         //TODO Work on game logic behaviour
-                        Vector3 backwardsVector = new Vector3(Xcoor, Ycoor, Zcoor) - new Vector3(neighbour.Xcoor, neighbour.Ycoor, neighbour.Zcoor);
-                        //Vector3 indexToFind = 
-                        // DO BACKWARD CHECK - YES (ADD MATCH DATA TO GAME CONTROLLER)
-                        // IF NOT IN THE MIDDLE, TELL FOUND NEIGHBOUR TO DO BACKWARD CHECK
+                        Vector3 currentPosition = new Vector3(Xcoor,Ycoor,Zcoor);
+                        Vector3 neighbourPosition = new Vector3(neighbour.Xcoor, neighbour.Ycoor, neighbour.Zcoor);
+                        Vector3 backwardsVector = currentPosition - neighbourPosition;
+                        Vector3 forwardVector = backwardsVector*-1;
+                        
+                        // DO FORWARD CHECK (ASSUMING ITS THE END OF A 3 MATCH)
+                        ReferencePointBehaviour forwardNeighbour = TransformationGrid.instance.GetReferencePointByIndex(neighbourPosition+forwardVector);
+                        ReferencePointBehaviour backwardNeighbour = TransformationGrid.instance.GetReferencePointByIndex(currentPosition+backwardsVector);
+                        if (forwardNeighbour!=null)
+                        {
+                            if (forwardNeighbour.GetComponent<RingPointManager>().HaveColor(colorcheck[i]))
+                            {
+                                // OKAY! I FOUND 3 IN A LINE, NOW ADD THE MATCH IN MATCHMANAGER
+                                Debug.Log("WE FOUND MATCH");
+                                MatchData foundMatch = new MatchData();
+                                foundMatch.colorMark = colorcheck[i];
+                                foundMatch.markedObjects = new List<RingBehaviour>();
+
+                                foundMatch.markedObjects.Add(gameObject.GetComponent<RingPointManager>().Ring);
+                                Debug.Log("ADDED OWN");
+                                foundMatch.markedObjects.Add(neighbour.GetComponent<RingPointManager>().Ring);
+                                Debug.Log("ADDED neighbour");
+                                foundMatch.markedObjects.Add(forwardNeighbour.GetComponent<RingPointManager>().Ring);
+                                Debug.Log("ADDED forwardneighbour");
+
+                                MatchController.instance.StoreMatch(foundMatch);
+                                
+                            }
+                        }
+                        // DO BACKWARD CHECK (ASSUME ITS THE MIDDLE OF A 3 MATCH)
+                        if (backwardNeighbour!=null)
+                        {
+                            if (backwardNeighbour.GetComponent<RingPointManager>().HaveColor(colorcheck[i]))
+                            {
+                                Debug.Log("WE FOUND MATCH");
+                                MatchData foundMatch = new MatchData();
+                                foundMatch.colorMark = colorcheck[i];
+                                foundMatch.markedObjects = new List<RingBehaviour>();
+                                
+                                foundMatch.markedObjects.Add(gameObject.GetComponent<RingPointManager>().Ring);
+                                Debug.Log("ADDED OWN");
+                                foundMatch.markedObjects.Add(neighbour.GetComponent<RingPointManager>().Ring);
+                                Debug.Log("ADDED neighbour");
+                                foundMatch.markedObjects.Add(backwardNeighbour.GetComponent<RingPointManager>().Ring);
+                                Debug.Log("ADDED forwardneighbour");
+
+                                MatchController.instance.StoreMatch(foundMatch);
+                            }
+                        }                      
                     }
                 }
             }
         }
         // CHECKS HAS BEEN DONE - CLEAR ALL MARKED RINGS OFF GAME CONTROLLERS
+        MatchController.instance.ClearPendingMatches();
         Debug.Log("NEIGHBOURS HAS " + neighbourHasColor + " SIMILAR COLORS TIERS");
     }
 	// Update is called once per frame

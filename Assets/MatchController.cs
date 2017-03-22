@@ -67,6 +67,7 @@ public sealed class MatchController : MonoBehaviour {
                 OnMatchEventTotalItemsRemoved(totalItemsRemoved);
             }
         }
+        pendingMatchData.Clear();
     }
 	
 

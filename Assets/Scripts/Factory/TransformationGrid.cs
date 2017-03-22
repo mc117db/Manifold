@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TransformationGrid : MonoBehaviour {
+public sealed class TransformationGrid : MonoBehaviour {
 
     public Transform parentTransform;
     public Transform prefab;
+    public static TransformationGrid instance;
     public bool changeColorBasedOnResolution;
     int gridResolution = 3;
     List<Transformation> transformations;
@@ -23,16 +24,21 @@ public class TransformationGrid : MonoBehaviour {
     }
     public ReferencePointBehaviour GetReferencePointByIndex (int x,int y, int z)
     {
-        if ((x>gridResolution||x<0)|| (y > gridResolution || y < 0)|| (z > gridResolution || z < 0))
+        if ((x>gridResolution-1||x<0)|| (y > gridResolution-1 || y < 0)|| (z > gridResolution-1 || z < 0))
         {
             Debug.Log("OUT OF RANGE");
             return null;
         }
         return NODES[x, y, z];
     }
+    public ReferencePointBehaviour GetReferencePointByIndex (Vector3 overloadPara)
+    {
+        return GetReferencePointByIndex((int)overloadPara.x,(int)overloadPara.y,(int)overloadPara.z);
+    }
     #region MonoBehaviour Functions
     void Awake()
     {
+        instance = this;
         Nodes = new ReferencePointBehaviour[gridResolution, gridResolution, gridResolution];
         //Debug.Log("Test "+Nodes.Rank);
         //Debug.Log("Total Number of Items " + Nodes.Length);
@@ -51,6 +57,10 @@ public class TransformationGrid : MonoBehaviour {
     }
     void Start()
     {
+        if (instance!=this)
+        {
+            Destroy(this);
+        }
         transform.position = Vector3.zero;
     }
     void Update()

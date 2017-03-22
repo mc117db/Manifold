@@ -10,7 +10,7 @@ public class RingPointManager : MonoBehaviour, IDropHandler {
     // This should not know anything about the overall game state
     // This should not know its own neighbours
 
-    RingBehaviour Ring;
+    public RingBehaviour Ring;
     static float localRingSize = 1.5f;
     public delegate void onRingDrop();
     public static event onRingDrop RingDropEvent; // RingFactory depends on this

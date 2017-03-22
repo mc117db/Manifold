@@ -20,11 +20,11 @@ public class RingBehaviour : MonoBehaviour {
         set
         {
             currentRingData = value;
+            PaintRings();
             if (stateChangeEvent != null)
             {
                 stateChangeEvent();
             } 
-            PaintRings();
         }
     }
     public bool IsInPlace{
