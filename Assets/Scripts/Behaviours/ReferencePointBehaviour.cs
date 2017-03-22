@@ -79,11 +79,17 @@ public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPoin
                     if (neighbour.GetComponent<RingPointManager>().HaveColor(colorcheck[i]))
                     {
                         neighbourHasColor++;
+                        //TODO Work on game logic behaviour
+                        Vector3 backwardsVector = new Vector3(Xcoor, Ycoor, Zcoor) - new Vector3(neighbour.Xcoor, neighbour.Ycoor, neighbour.Zcoor);
+                        //Vector3 indexToFind = 
+                        // DO BACKWARD CHECK - YES (ADD MATCH DATA TO GAME CONTROLLER)
+                        // IF NOT IN THE MIDDLE, TELL FOUND NEIGHBOUR TO DO BACKWARD CHECK
                     }
                 }
             }
         }
-        Debug.Log("NEIGHBOURS HAS " + neighbourHasColor + " TO REMOVE!");
+        // CHECKS HAS BEEN DONE - CLEAR ALL MARKED RINGS OFF GAME CONTROLLERS
+        Debug.Log("NEIGHBOURS HAS " + neighbourHasColor + " SIMILAR COLORS TIERS");
     }
 	// Update is called once per frame
 	void Update () {

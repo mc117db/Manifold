@@ -21,7 +21,16 @@ public class TransformationGrid : MonoBehaviour {
         }
         // NO SETTER!
     }
-
+    public ReferencePointBehaviour GetReferencePointByIndex (int x,int y, int z)
+    {
+        if ((x>gridResolution||x<0)|| (y > gridResolution || y < 0)|| (z > gridResolution || z < 0))
+        {
+            Debug.Log("OUT OF RANGE");
+            return null;
+        }
+        return NODES[x, y, z];
+    }
+    #region MonoBehaviour Functions
     void Awake()
     {
         Nodes = new ReferencePointBehaviour[gridResolution, gridResolution, gridResolution];
@@ -43,7 +52,7 @@ public class TransformationGrid : MonoBehaviour {
     void Start()
     {
         transform.position = Vector3.zero;
-    } 
+    }
     void Update()
     {
         UpdateTransformation();
@@ -59,6 +68,8 @@ public class TransformationGrid : MonoBehaviour {
             }
         }
     }
+    #endregion
+    #region Transformation Functions
     void UpdateTransformation()
     {
         GetComponents<Transformation>(transformations);
@@ -74,7 +85,7 @@ public class TransformationGrid : MonoBehaviour {
     Transform CreateGridPoint(int x, int y, int z)
     {
         Transform point = Instantiate<Transform>(prefab);
-        if (point.GetComponent(typeof (ReferencePointBehaviour)) != null)
+        if (point.GetComponent(typeof(ReferencePointBehaviour)) != null)
         {
             //Debug.Log("J: "+x + y + z);
             //POSTMORTEM The Multidimensonal array conundrum, Last time I had a bug over here that the Nodes always get populated with a 2,2,2 index node, turns out that I was accessing prefab instead of point transform, simple error but big mistake
@@ -88,7 +99,7 @@ public class TransformationGrid : MonoBehaviour {
         {
             Debug.Log("PREFAB ATTACHED DOESN'T HAVE REFERENCEPOINTBEHAVIOUR ATTACHED!");
         }
-        if(parentTransform)
+        if (parentTransform)
         {
             point.parent = parentTransform;
         }
@@ -100,11 +111,10 @@ public class TransformationGrid : MonoBehaviour {
                 (float)x / gridResolution,
                 (float)y / gridResolution,
                 (float)z / gridResolution
-            ); 
+            );
         }
         return point;
     }
-
     Vector3 GetCoordinates(int x, int y, int z)
     {
         return new Vector3(
@@ -113,10 +123,10 @@ public class TransformationGrid : MonoBehaviour {
             z - (gridResolution - 1) * 0.5f
         );
     }
-
     Vector3 TransformPoint(int x, int y, int z)
     {
         Vector3 coordinates = GetCoordinates(x, y, z);
         return transformation.MultiplyPoint(coordinates);
-    }
+    } 
+    #endregion
 }
