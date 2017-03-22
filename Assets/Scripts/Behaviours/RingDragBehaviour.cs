@@ -28,7 +28,11 @@ public class RingDragBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandler,
             gameObject.GetComponent<RingBehaviour>().IsInPlace = canDrag;
         }
     }
-
+    private void OnDestroy()
+    {
+        // HACK Refactor to get rid of this...
+        RingDragBehaviour.dragging = false;
+    }
     #region Interface Implementations
 
     void Start ()

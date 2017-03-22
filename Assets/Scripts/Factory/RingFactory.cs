@@ -24,7 +24,7 @@ public class RingFactory : MonoBehaviour {
 
     public void UpdateState()
     {
-        ringsInDock--;
+        ringsInDock = transform.childCount;
         if (ringsInDock <= 0)
         {
             if (onRefreshSetEvent != null)

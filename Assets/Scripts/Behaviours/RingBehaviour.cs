@@ -23,7 +23,7 @@ public class RingBehaviour : MonoBehaviour {
             PaintRings();
             if (stateChangeEvent != null)
             {
-                stateChangeEvent();
+                //stateChangeEvent();
             } 
         }
     }
@@ -42,6 +42,12 @@ public class RingBehaviour : MonoBehaviour {
     }
     void PaintRings()
     {
+        if (!currentRingData.Outer && !currentRingData.Middle && !currentRingData.Inner)
+        {
+            // TODO Add Pooling implementation later
+            Destroy(gameObject);
+            return;
+        }
         if (ColorManager.instance == null)
         {
             Debug.Log("NO COLORMANAGER TO FETCH COLOR DATA FROM!");
@@ -76,6 +82,7 @@ public class RingBehaviour : MonoBehaviour {
                 currentRingData.ringColors[2]);
             inner.SetActive(true);
         }
+      
     }
     public bool CombineRings (RingData other)
 	{
@@ -164,4 +171,8 @@ public class RingBehaviour : MonoBehaviour {
 	void Update () {
 		
 	}
+    void OnDestroy()
+    {
+        stateChangeEvent = null;
+    }
 }
