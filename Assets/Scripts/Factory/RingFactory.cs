@@ -10,8 +10,8 @@ public class RingFactory : MonoBehaviour {
     public delegate void onRefreshSet();
     public static event onRefreshSet onRefreshSetEvent;
     // Use this for initialization
-    [SerializeField]
-    int ringsInDock = 3;
+    [HideInInspector]
+    public int ringsInDock = 3;
 	void Start () {
         RingPointManager.RingDropEvent += UpdateState;
         CreateNewSet(); //TODO This will be called by the GameManager later

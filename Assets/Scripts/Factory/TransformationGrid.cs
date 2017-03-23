@@ -26,7 +26,7 @@ public sealed class TransformationGrid : MonoBehaviour {
     {
         if ((x>gridResolution-1||x<0)|| (y > gridResolution-1 || y < 0)|| (z > gridResolution-1 || z < 0))
         {
-            Debug.Log("OUT OF RANGE");
+            //Debug.Log("OUT OF RANGE");
             return null;
         }
         return NODES[x, y, z];

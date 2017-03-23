@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using DG.Tweening; 
 
 public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPointerExitHandler
 {
@@ -69,6 +70,7 @@ public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPoin
 	public void CheckNeighboursForColor(List<ColorIndex> colorcheck)
     {
         int neighbourHasColor = 0;
+        bool MatchFound = false;
         for (int i = 0; i < colorcheck.Count; i++)
         {
             //Debug.Log("CHECKING FOR: "+colorcheck[i].ToString());
@@ -93,18 +95,19 @@ public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPoin
                             if (forwardNeighbour.GetComponent<RingPointManager>().HaveColor(colorcheck[i]))
                             {
                                 // OKAY! I FOUND 3 IN A LINE, NOW ADD THE MATCH IN MATCHMANAGER
-                                Debug.Log("WE FOUND MATCH");
+                                //Debug.Log("WE FOUND MATCH");
                                 MatchData foundMatch = new MatchData();
                                 foundMatch.colorMark = colorcheck[i];
                                 foundMatch.markedObjects = new List<RingBehaviour>();
 
                                 foundMatch.markedObjects.Add(gameObject.GetComponent<RingPointManager>().Ring);
-                                Debug.Log("ADDED OWN");
+                                //Debug.Log("ADDED OWN");
                                 foundMatch.markedObjects.Add(neighbour.GetComponent<RingPointManager>().Ring);
-                                Debug.Log("ADDED neighbour");
+                                //Debug.Log("ADDED neighbour");
                                 foundMatch.markedObjects.Add(forwardNeighbour.GetComponent<RingPointManager>().Ring);
-                                Debug.Log("ADDED forwardneighbour");
+                                //Debug.Log("ADDED forwardneighbour");
 
+                                MatchFound = true;
                                 MatchController.instance.StoreMatch(foundMatch);
                                 
                             }
@@ -114,18 +117,19 @@ public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPoin
                         {
                             if (backwardNeighbour.GetComponent<RingPointManager>().HaveColor(colorcheck[i]))
                             {
-                                Debug.Log("WE FOUND MATCH");
+                                //Debug.Log("WE FOUND MATCH");
                                 MatchData foundMatch = new MatchData();
                                 foundMatch.colorMark = colorcheck[i];
                                 foundMatch.markedObjects = new List<RingBehaviour>();
                                 
                                 foundMatch.markedObjects.Add(gameObject.GetComponent<RingPointManager>().Ring);
-                                Debug.Log("ADDED OWN");
+                                //Debug.Log("ADDED OWN");
                                 foundMatch.markedObjects.Add(neighbour.GetComponent<RingPointManager>().Ring);
-                                Debug.Log("ADDED neighbour");
+                                //Debug.Log("ADDED neighbour");
                                 foundMatch.markedObjects.Add(backwardNeighbour.GetComponent<RingPointManager>().Ring);
-                                Debug.Log("ADDED forwardneighbour");
+                                //Debug.Log("ADDED forwardneighbour");
 
+                                MatchFound = true;
                                 MatchController.instance.StoreMatch(foundMatch);
                             }
                         }                      
@@ -133,9 +137,17 @@ public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPoin
                 }
             }
         }
-        // CHECKS HAS BEEN DONE - CLEAR ALL MARKED RINGS OFF GAME CONTROLLERS
-        MatchController.instance.ClearPendingMatches();
-        Debug.Log("NEIGHBOURS HAS " + neighbourHasColor + " SIMILAR COLORS TIERS");
+        if (!MatchFound)
+        {
+            // NO MATCH FOUND, RESET THE COMBO :<
+            ScoreController.instance.ResetCombo();
+        }
+        else
+        {
+            // CHECKS HAS BEEN DONE - CLEAR ALL MARKED RINGS OFF GAME CONTROLLERS   
+            MatchController.instance.ClearPendingMatches();
+        }
+        //Debug.Log("NEIGHBOURS HAS " + neighbourHasColor + " SIMILAR COLORS TIERS");
     }
 	// Update is called once per frame
 	void Update () {
@@ -146,11 +158,14 @@ public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPoin
     {
         if (RingDragBehaviour.dragging)
         {
+            // DO CHECK IF CAN DROP
         }
     }
     public void OnPointerExit(PointerEventData eventData)
     {
-        return;
-        throw new NotImplementedException();
+        if (RingDragBehaviour.dragging)
+        {
+            
+        }
     }
 }
