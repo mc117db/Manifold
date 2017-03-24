@@ -45,6 +45,10 @@ public class ScoreController : MonoBehaviour {
 		}
 		set{
 			currentScore = value;
+            if (ScoreValueUpdateEvent != null)
+            {
+                ScoreValueUpdateEvent(currentScore);
+            }
 			if (ScoreUpdateEvent != null)
 			{
 				ScoreUpdateEvent();
@@ -69,7 +73,10 @@ public class ScoreController : MonoBehaviour {
 	public static ScoreController instance;
 
 	public delegate void OnUpdateEvent ();
-	public event OnUpdateEvent ScoreUpdateEvent; //TODO HOOK UP TO UI ELEMENT LATER
+    public delegate void OnUpdateEventReturnInt(int valueToReturn);
+
+    public event OnUpdateEventReturnInt ScoreValueUpdateEvent;
+	public event OnUpdateEvent ScoreUpdateEvent; 
 	public event OnUpdateEvent ComboUpdateEvent;
 	// Use this for initialization
 	void Awake()
