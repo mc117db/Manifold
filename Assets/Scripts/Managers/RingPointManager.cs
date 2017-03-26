@@ -10,32 +10,29 @@ public class RingPointManager : MonoBehaviour, IDropHandler {
     // This should not know anything about the overall game state
     // This should not know its own neighbours
 
-    public RingBehaviour Ring;
+    RingBehaviour ring;
+    public RingBehaviour Ring
+    {
+        get{  
+            return ring;
+        }
+        set
+        {
+            ring = value;
+            if (ring)
+            {
+            ToggleReferencePointRenderer(false);
+            }
+            else
+            {
+            ToggleReferencePointRenderer(true);
+            }
+        }
+    }
     static float localRingSize = 1.5f;
     public delegate void onRingDrop();
     public static event onRingDrop RingDropEvent; // RingFactory depends on this
     public event onRingDrop stateChange; // This happens when something changes to current ring
-
-    #region OLD IMPLMENTATION
-    /*
-    public bool ReceiveRing(ref RingDragBehaviour dRing)
-    {
-        //TODO get argument to accept a ring component reference rather than gameobject (DONE)
-        if (dRing)
-        {
-            // TODO Add conditional here that checks ring between current ring and ring to be accepted, return false if cannot fit.
-            Ring = dRing.gameObject;
-            Ring.transform.parent = transform;
-            Ring.transform.localScale = Vector3.one * localRingSize;
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    } 
-    */
-    #endregion
     void Start()
     {
         stateChange += CheckNeighboursForSimiliarColors;
@@ -102,5 +99,11 @@ public class RingPointManager : MonoBehaviour, IDropHandler {
         {
             RingDropEvent();
         }
+    }
+    public void ToggleReferencePointRenderer (bool val)
+    {
+        //HACK
+        GetComponent<SpriteRenderer>().enabled = val;
+        GetComponent<ReferencePointBehaviour>().ToggleColor(false);
     }
 }

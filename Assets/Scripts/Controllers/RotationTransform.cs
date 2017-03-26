@@ -21,8 +21,17 @@ public class RotationTransform : Transformation {
         //Debug.Log(delta);
         rotation.y += rotationSensitivity.x * delta.x;
         rotation.x += rotationSensitivity.y * delta.y;
+        rotation = WrapEulerRotation(rotation);
     }
-
+    Vector3 WrapEulerRotation (Vector3 rotationToWrap)
+    {
+        Vector3 newRot = rotationToWrap;
+        newRot.x %= 360;
+        newRot.y %= 360;
+        newRot.z %= 360;
+        return newRot;
+    }
+    // Transformation Grid will call Apply()
     public override Vector3 Apply(Vector3 point)
     {
         float radX = rotation.x * Mathf.Deg2Rad;

@@ -11,8 +11,8 @@ public sealed class MatchController : MonoBehaviour {
     public event OnMatch OnMatchEventTotalItemsRemoved;
     public event OnMatchData OnMatchEventData;
 
-
-    private List<MatchData> pendingMatchData = new List<MatchData>();
+    private Dictionary<ColorIndex,List<RingBehaviour>> pendingDataDictionary = new Dictionary<ColorIndex,List<RingBehaviour>>();
+    //private List<MatchData> pendingMatchData = new List<MatchData>();
     public void Awake()
     {
         instance = this;
@@ -25,40 +25,34 @@ public sealed class MatchController : MonoBehaviour {
 	}
     public void StoreMatch (MatchData matchData)
     {
-        if (pendingMatchData.Count == 0)
+        if (!pendingDataDictionary.ContainsKey(matchData.colorMark))
         {
-            pendingMatchData.Add(matchData);
+            pendingDataDictionary.Add(matchData.colorMark,matchData.markedObjects);
         }
         else
         {
-            for (int i = 0; i < pendingMatchData.Count; i++)
-            {
-                if (pendingMatchData[i].colorMark == matchData.colorMark)
-                {
-                    pendingMatchData[i].markedObjects.AddRange(matchData.markedObjects);
-                }
-            }
+            pendingDataDictionary[matchData.colorMark].AddRange(matchData.markedObjects);
         }
     }
+    
 	public void ClearPendingMatches()
     {
-        if (pendingMatchData.Count == 0)
-        {
-            return;
-        }
+        Debug.Log("PENDING COLORS TO REMOVE: "+ pendingDataDictionary.Count+" COLORS!");
         int totalItemsRemoved= 0;
-        for (int i = 0; i < pendingMatchData.Count; i++)
+        foreach (ColorIndex colorKey in pendingDataDictionary.Keys)
         {
-            if (OnMatchEventData != null)
-            {
-                OnMatchEventData(pendingMatchData[i]);
-            }
-            for (int j = 0; j < pendingMatchData[i].markedObjects.Count; j++)
+            for (int i = 0; i < pendingDataDictionary[colorKey].Count;i++)
             {
                 totalItemsRemoved++;
-                // Do something on the ring
-                pendingMatchData[i].markedObjects[j].RemoveColor(pendingMatchData[i].colorMark);
+                pendingDataDictionary[colorKey][i].RemoveColor(colorKey);
             }
+            MatchData dataToBroadcast = new MatchData();
+            dataToBroadcast.colorMark = colorKey;
+            dataToBroadcast.markedObjects = pendingDataDictionary[colorKey];
+            if (OnMatchEventData != null)
+            {
+                OnMatchEventData(dataToBroadcast);
+            } 
         }
         if (totalItemsRemoved > 0)
         {
@@ -67,7 +61,7 @@ public sealed class MatchController : MonoBehaviour {
                 OnMatchEventTotalItemsRemoved(totalItemsRemoved);
             }
         }
-        pendingMatchData.Clear();
+        pendingDataDictionary.Clear();
     }
 	
 

@@ -45,6 +45,8 @@ public class RingBehaviour : MonoBehaviour {
         if (!currentRingData.Outer && !currentRingData.Middle && !currentRingData.Inner)
         {
             // TODO Add Pooling implementation later
+            //HACK
+            transform.parent.GetComponent<RingPointManager>().ToggleReferencePointRenderer(true);
             Destroy(gameObject);
             return;
         }

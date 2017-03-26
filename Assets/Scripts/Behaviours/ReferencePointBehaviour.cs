@@ -11,11 +11,11 @@ public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPoin
     public int Xcoor, Ycoor, Zcoor;
     int totalNumberOfNeighoursFound = 0;
 
-    public Vector3 targetPosition;
-    public float lerpSpeed = 0.2f;
+    Color originalColor;
 
 	void Start()
     {
+        originalColor = GetComponent<SpriteRenderer>().color;
         neighbours = new List<ReferencePointBehaviour>();
         FindNeighbours();
     }
@@ -69,10 +69,12 @@ public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPoin
     }
 	public void CheckNeighboursForColor(List<ColorIndex> colorcheck)
     {
+        Debug.Log("CHECKING FOR: "+colorcheck[0].ToString()+" "+colorcheck[1].ToString()+" "+colorcheck[2].ToString());
         int neighbourHasColor = 0;
         bool MatchFound = false;
         for (int i = 0; i < colorcheck.Count; i++)
         {
+            //Debug.Log("CURRENTLY CHECKING FOR: "+colorcheck[i]);
             //Debug.Log("CHECKING FOR: "+colorcheck[i].ToString());
             if (colorcheck[i] != ColorIndex.NONE)
             {
@@ -81,7 +83,6 @@ public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPoin
                     if (neighbour.GetComponent<RingPointManager>().HaveColor(colorcheck[i]))
                     {
                         neighbourHasColor++;
-                        //TODO Work on game logic behaviour
                         Vector3 currentPosition = new Vector3(Xcoor,Ycoor,Zcoor);
                         Vector3 neighbourPosition = new Vector3(neighbour.Xcoor, neighbour.Ycoor, neighbour.Zcoor);
                         Vector3 backwardsVector = currentPosition - neighbourPosition;
@@ -150,22 +151,31 @@ public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPoin
         //Debug.Log("NEIGHBOURS HAS " + neighbourHasColor + " SIMILAR COLORS TIERS");
     }
 	// Update is called once per frame
-	void Update () {
-        //transform.position = Vector3.MoveTowards(transform.position,targetPosition,lerpSpeed*Time.deltaTime);
-	}
 
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (RingDragBehaviour.dragging)
         {
             // DO CHECK IF CAN DROP
+            ToggleColor(true);
         }
     }
     public void OnPointerExit(PointerEventData eventData)
     {
         if (RingDragBehaviour.dragging)
         {
-            
+            ToggleColor(false);
+        }
+    }
+    public void ToggleColor(bool val)
+    {
+        if (val)
+        {
+            GetComponent<SpriteRenderer>().color = Color.white;
+        }
+        else
+        {
+            GetComponent<SpriteRenderer>().color = originalColor;
         }
     }
 }
