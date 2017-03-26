@@ -67,9 +67,20 @@ public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPoin
         Zcoor = z;
         gameObject.name = "Node: " + Xcoor+","+Ycoor+","+Zcoor;
     }
+    public bool HaveRing ()
+    {
+        if (GetComponent<RingPointManager>().Ring!= null)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 	public void CheckNeighboursForColor(List<ColorIndex> colorcheck)
     {
-        Debug.Log("CHECKING FOR: "+colorcheck[0].ToString()+" "+colorcheck[1].ToString()+" "+colorcheck[2].ToString());
+        //Debug.Log("CHECKING FOR: "+colorcheck[0].ToString()+" "+colorcheck[1].ToString()+" "+colorcheck[2].ToString());
         int neighbourHasColor = 0;
         bool MatchFound = false;
         for (int i = 0; i < colorcheck.Count; i++)

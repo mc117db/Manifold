@@ -16,11 +16,6 @@ public class RingFactory : MonoBehaviour {
         RingPointManager.RingDropEvent += UpdateState;
         CreateNewSet(); //TODO This will be called by the GameManager later
     }
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 
     public void UpdateState()
     {
@@ -34,11 +29,12 @@ public class RingFactory : MonoBehaviour {
             CreateNewSet();
         }
     }
-    void SpawnRingAtParent(Transform parentTransform)
+    public void SpawnRandomRingAtPoint(ReferencePointBehaviour point)
     {
         GameObject ring = Instantiate(RingPrefab);
-        ring.transform.parent = parentTransform;
+        ring.GetComponent<RingBehaviour>().CurrentRingData = GenerateNewRingData();
     }
+
     void CreateNewSet()
     {
         Debug.Log("REFRESH");

@@ -51,7 +51,7 @@ public class RingPointManager : MonoBehaviour, IDropHandler {
         if (!Ring)
         {
             // If reference point dont hold a ring, accept it straight away.
-            AcceptRing();
+            AcceptDragRing();
         }
         else
         {
@@ -59,7 +59,7 @@ public class RingPointManager : MonoBehaviour, IDropHandler {
             RingBehaviour otherRing = RingDragBehaviour.DraggedInstance.GetComponent<RingBehaviour>();
             if (Ring.CombineRings(otherRing.CurrentRingData))
             {
-                //AcceptRing();
+                //AcceptDragRing();
                 RingDropEvent();
                 stateChange();
                 GetComponent<RingDragBehaviour>().OnDragOverAndCombine();
@@ -83,9 +83,18 @@ public class RingPointManager : MonoBehaviour, IDropHandler {
             return Ring.CurrentRingData.ringColors.Contains(index);
         }
     }
-    void AcceptRing()
+    void AcceptDragRing()
     {
         Ring = RingDragBehaviour.DraggedInstance.GetComponent<RingBehaviour>();
+        IntializeRing();
+    }
+    void AcceptSpawnedRing(RingBehaviour ringToAccept)
+    {
+        Ring = ringToAccept;
+        IntializeRing();
+    }
+    void IntializeRing()
+    {
         Ring.gameObject.GetComponent<RingDragBehaviour>().CanDrag = false;
         Ring.transform.parent = transform;
         Ring.transform.localScale = Vector3.one * localRingSize;

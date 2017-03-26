@@ -59,6 +59,10 @@ public class DragOrbitTouchScript : MonoBehaviour {
                 lastFrameInputPosition = currentInputPos;
                 NotifyListeners();
             }
+			else
+			{
+				ResetValues();
+			}
 		}
 	}
 	// ---------------------- Helper Functions --------------------- //
