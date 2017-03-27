@@ -22,17 +22,21 @@ public class RingFactory : MonoBehaviour {
         ringsInDock = transform.childCount;
         if (ringsInDock <= 0)
         {
-            if (onRefreshSetEvent != null)
+           
+            CreateNewSet();
+             if (onRefreshSetEvent != null)
             {
                 onRefreshSetEvent();
             }
-            CreateNewSet();
         }
     }
     public void SpawnRandomRingAtPoint(ReferencePointBehaviour point)
     {
         GameObject ring = Instantiate(RingPrefab);
-        ring.GetComponent<RingBehaviour>().CurrentRingData = GenerateNewRingData();
+        RingBehaviour ringComponent = ring.GetComponent<RingBehaviour>();
+        ringComponent.CurrentRingData = GenerateNewRingData();
+        
+        point.GetComponent<RingPointManager>().AcceptSpawnedRing(ringComponent);
     }
 
     void CreateNewSet()
@@ -45,6 +49,7 @@ public class RingFactory : MonoBehaviour {
             ring.transform.parent = transform;
             ring.transform.localPosition = new Vector3(i * horizontalOffset, i == 0 ? middleUpperOffset : 0, 0);
             ring.GetComponent<RingBehaviour>().CurrentRingData = GenerateNewRingData();
+            ring.GetComponent<RingScaleAnimationController>().GrowIn();
         }
         ringsInDock = 3;
     }

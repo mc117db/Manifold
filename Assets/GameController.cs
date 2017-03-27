@@ -2,9 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public class GameState
+{
+
+}
+
 public class GameController : MonoBehaviour {
 
 	public RingFactory RingFactoryComponent;
+	public ColorManager ColorManagerComponent;
+	public int setsRefreshed = 0;
+	public int setsToNextLevel = 3;
+	public int currentLevel = 1;
+	void Start () {
+		RingFactory.onRefreshSetEvent += SpawnRandomRingAtRandomPoint;
+		RingFactory.onRefreshSetEvent += AdvanceGameState;
+	}
 	public void SpawnRandomRingAtRandomPoint ()
 	{
 		Debug.Log("GAME ACTION: Spawning Random Ring at Random Point");
@@ -14,7 +27,7 @@ public class GameController : MonoBehaviour {
 			//Debug.Log("CHECK");
 			if (!node.HaveRing())
 			{
-				Debug.Log("ADD NODE");
+				//Debug.Log("ADD NODE");
 				availablePoints.Add(node);
 			}
 		}
@@ -22,15 +35,28 @@ public class GameController : MonoBehaviour {
 		{
 			if (RingFactoryComponent != null)
 			{
-				Debug.Log("SPAWNING!");
+				Debug.Log("Available Points: "+availablePoints.Count);
 				RingFactoryComponent.SpawnRandomRingAtPoint(availablePoints[Random.Range(0,availablePoints.Count-1)]);
 			}
 		}
 	}
-	// Use this for initialization
-	void Start () {
-		
+	public void AdvanceGameState()
+	{
+		setsRefreshed++;
+		setsToNextLevel--;
+		if (setsToNextLevel <= 0)
+		{
+			if (currentLevel-1 < 3)
+			{
+				Debug.Log("ADVANCING LEVEL");
+				ColorManagerComponent.CurrentLevel++;
+				setsToNextLevel = 3;
+			}
+			
+		}
 	}
+	// Use this for initialization
+	
 	
 	// Update is called once per frame
 	void Update () {

@@ -11,7 +11,6 @@ public class RingScaleAnimationController : MonoBehaviour {
 		gameObject.GetComponent<RingBehaviour>().stateChangeEvent += Shake;
         gameObject.GetComponent<RingDragBehaviour>().failDragEvent += GrowIn;
 		//TODO Refactor for pooling later.
-		GrowIn();
 	}
 	public void Shake()
 	{
