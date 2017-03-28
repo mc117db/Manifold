@@ -25,7 +25,6 @@ public class RingDragBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandler,
         set
         {
             canDrag = value;
-            gameObject.GetComponent<RingBehaviour>().IsInPlace = canDrag;
         }
     }
     private void OnDestroy()

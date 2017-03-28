@@ -109,7 +109,7 @@ public class ScoreController : MonoBehaviour {
 	}
 	public void ResetCombo()
 	{
-		Debug.Log("RESET COMBO");
+		//Debug.Log("RESET COMBO");
 		matchLastTurn = false;
 		CurrentComboNumber = 0;
 	}

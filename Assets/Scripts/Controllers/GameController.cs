@@ -35,7 +35,7 @@ public class GameController : MonoBehaviour {
 		{
 			if (RingFactoryComponent != null)
 			{
-				Debug.Log("Available Points: "+availablePoints.Count);
+				//Debug.Log("Available Points: "+availablePoints.Count);
 				RingFactoryComponent.SpawnRandomRingAtPoint(availablePoints[Random.Range(0,availablePoints.Count-1)]);
 			}
 		}

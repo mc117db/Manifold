@@ -56,18 +56,22 @@ public class RingPointManager : MonoBehaviour, IDropHandler {
         else
         {
             //Debug.Log("SOMETHING INSIDE");
-            RingBehaviour otherRing = RingDragBehaviour.DraggedInstance.GetComponent<RingBehaviour>();
-            if (Ring.CombineRings(otherRing.CurrentRingData))
+            if (Ring)
             {
-                //AcceptDragRing();
-                RingDropEvent();
-                stateChange();
-                GetComponent<RingDragBehaviour>().OnDragOverAndCombine();
-            }
-            else
-            {
-                // CASE WHEN TIERS DONT MATCH UP
-                return;
+                RingBehaviour otherRing = RingDragBehaviour.DraggedInstance.GetComponent<RingBehaviour>();
+                if (Ring.CombineRings(otherRing.CurrentRingData))
+                {
+                    // The dragged ring will be destroyed with its data transferred to the residing ring in ringpointmanager.
+                    //AcceptDragRing();
+                    RingDropEvent();
+                    stateChange();
+                    otherRing.GetComponent<RingDragBehaviour>().OnDragOverAndCombine();
+                }
+                else
+                {
+                    // CASE WHEN TIERS DONT MATCH UP
+                    return;
+                }
             }
         }
         
