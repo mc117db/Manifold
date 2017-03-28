@@ -44,7 +44,19 @@ public class GameController : MonoBehaviour {
             Debug.Log("NO MORE SLOTS TO SPAWN");
         }
 	}
-
+    public void RemoveAllRings ()
+    {
+        Debug.Log("GAME ACTION: Removing all rings from grid");
+        foreach (ReferencePointBehaviour node in TransformationGrid.NODES)
+        {
+            //Debug.Log("CHECK");
+            if (node.HaveRing())
+            {
+                //Debug.Log("ADD NODE");
+                node.GetComponent<RingPointManager>().RemoveRing();
+            }
+        }
+    }
 	public void AdvanceGameState()
 	{
 		setsRefreshed++;

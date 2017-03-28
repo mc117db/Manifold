@@ -87,6 +87,13 @@ public class RingPointManager : MonoBehaviour, IDropHandler {
             return Ring.CurrentRingData.ringColors.Contains(index);
         }
     }
+    public void RemoveRing()
+    {
+        if (ring)
+        {
+            ring.RemoveRing();
+        }
+    }
     void AcceptDragRing()
     {
         Ring = RingDragBehaviour.DraggedInstance.GetComponent<RingBehaviour>();

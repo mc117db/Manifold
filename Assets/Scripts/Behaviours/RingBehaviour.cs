@@ -164,6 +164,16 @@ public class RingBehaviour : MonoBehaviour {
         }
         CurrentRingData = newState;
     }
+    public void RemoveRing()
+    {
+        RingData newState = new RingData();
+        newState.ringColors = new List<ColorIndex>();
+        for (int i = 0; i < 2; i++)
+        {
+            newState.ringColors.Add(ColorIndex.NONE);
+        }
+        CurrentRingData = newState;
+    }
 	// Use this for initialization
 	void Start () {
 		
