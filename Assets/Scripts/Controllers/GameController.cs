@@ -39,7 +39,12 @@ public class GameController : MonoBehaviour {
 				RingFactoryComponent.SpawnRandomRingAtPoint(availablePoints[Random.Range(0,availablePoints.Count-1)]);
 			}
 		}
+        else
+        {
+            Debug.Log("NO MORE SLOTS TO SPAWN");
+        }
 	}
+
 	public void AdvanceGameState()
 	{
 		setsRefreshed++;

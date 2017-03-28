@@ -41,6 +41,7 @@ public sealed class MatchController : MonoBehaviour {
         int totalItemsRemoved= 0;
         foreach (ColorIndex colorKey in pendingDataDictionary.Keys)
         {
+            Debug.Log("CLEARING COLORKEY: " + colorKey.ToString());
             for (int i = 0; i < pendingDataDictionary[colorKey].Count;i++)
             {
                 totalItemsRemoved++;

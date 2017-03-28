@@ -11,7 +11,7 @@ public class RingFactory : MonoBehaviour {
     public static event onRefreshSet onRefreshSetEvent;
     // Use this for initialization
     [HideInInspector]
-    public int ringsInDock = 3;
+    //public int ringsInDock = 3;
 	void Start () {
         RingPointManager.RingDropEvent += UpdateState;
         CreateNewSet(); //TODO This will be called by the GameManager later
@@ -19,10 +19,11 @@ public class RingFactory : MonoBehaviour {
 
     public void UpdateState()
     {
-        ringsInDock = transform.childCount;
-        if (ringsInDock <= 0)
+        Debug.Log("RingFactory Update State");
+        //ringsInDock = transform.childCount;
+        Debug.Log("Rings currently in dock: " + transform.childCount);
+        if (transform.childCount <= 0)
         {
-           
             CreateNewSet();
              if (onRefreshSetEvent != null)
             {
@@ -51,7 +52,7 @@ public class RingFactory : MonoBehaviour {
             ring.GetComponent<RingBehaviour>().CurrentRingData = GenerateNewRingData();
             ring.GetComponent<RingScaleAnimationController>().GrowIn();
         }
-        ringsInDock = 3;
+        //ringsInDock = transform.childCount;
     }
     RingData GenerateNewRingData ()
     {

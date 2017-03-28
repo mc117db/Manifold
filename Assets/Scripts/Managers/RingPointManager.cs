@@ -62,10 +62,10 @@ public class RingPointManager : MonoBehaviour, IDropHandler {
                 if (Ring.CombineRings(otherRing.CurrentRingData))
                 {
                     // The dragged ring will be destroyed with its data transferred to the residing ring in ringpointmanager.
-                    //AcceptDragRing();
+                    //AcceptDragRing(); 
+                    otherRing.GetComponent<RingDragBehaviour>().OnDragOverAndCombine();
                     RingDropEvent();
                     stateChange();
-                    otherRing.GetComponent<RingDragBehaviour>().OnDragOverAndCombine();
                 }
                 else
                 {
