@@ -60,6 +60,11 @@ public class ColorManager : MonoBehaviour {
     }
     public void UpdateLevel ()
     {
+        if (CurrentLevel > registeredLevelColors.Count)
+        {
+            Debug.Log("Game tried to advance but max level reached already");
+            return;
+        }
         Debug.Log("Updating Intial colors");
         activeColors.Clear();
         Debug.Log("NO OF REGISTERED LEVELS: " + registeredLevelColors.Count);

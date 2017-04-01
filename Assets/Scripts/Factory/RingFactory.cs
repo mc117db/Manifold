@@ -8,10 +8,10 @@ public class RingFactory : MonoBehaviour {
     public float horizontalOffset = 2f;
     public float middleUpperOffset = 3f;
     public delegate void onRefreshSet();
+    public delegate void onStagingSetUpdate(List<RingData> listOfRingsInStagingSet);
     public static event onRefreshSet onRefreshSetEvent;
-    // Use this for initialization
-    [HideInInspector]
-    //public int ringsInDock = 3;
+    public static event onStagingSetUpdate onStagingSetUpdateEvent;
+
 	void Start () {
         RingPointManager.RingDropEvent += UpdateState;
         CreateNewSet(); //TODO This will be called by the GameManager later
@@ -22,12 +22,25 @@ public class RingFactory : MonoBehaviour {
         Debug.Log("RingFactory Update State");
         //ringsInDock = transform.childCount;
         Debug.Log("Rings currently in dock: " + transform.childCount);
+
         if (transform.childCount <= 0)
         {
             CreateNewSet();
              if (onRefreshSetEvent != null)
             {
                 onRefreshSetEvent();
+            }
+        }
+        List<RingData> ringDataInUpdatedSet = new List<RingData>();
+        foreach (Transform child in transform)
+        {
+            ringDataInUpdatedSet.Add(child.GetComponent<RingBehaviour>().CurrentRingData);
+        }
+        if (ringDataInUpdatedSet.Count > 0)
+        {
+            if (onStagingSetUpdateEvent != null)
+            {
+                onStagingSetUpdateEvent(ringDataInUpdatedSet);
             }
         }
     }

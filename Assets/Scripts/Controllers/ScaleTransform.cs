@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class ScaleTransform : Transformation
 {
@@ -10,7 +11,10 @@ public class ScaleTransform : Transformation
     public bool shakeOnStagingAreaEvent = true;
     public void Start()
     {
-
+        if (shakeOnStagingAreaEvent)
+        {
+            RingFactory.onRefreshSetEvent += Shake;
+        }
     }
     public float Size
     {
@@ -24,6 +28,10 @@ public class ScaleTransform : Transformation
             size = value;
             scale = new Vector3(1,1,1) * value;
         }
+    }
+    public void Shake ()
+    {
+        transform.DOShakeScale(0.5f, new Vector3(0.2f, 0.2f, 0), 20, 30f);
     }
     public override Vector3 Apply(Vector3 point)
     {

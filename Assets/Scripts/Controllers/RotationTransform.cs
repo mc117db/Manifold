@@ -14,8 +14,6 @@ public class RotationTransform : Transformation {
     {
         if (delta.magnitude > 100)
         {
-            // This filters random noise from delta
-            // Not really elegant way of doing this.. but it works
             return;
         }
         //Debug.Log(delta);

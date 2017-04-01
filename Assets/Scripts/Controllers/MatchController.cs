@@ -37,11 +37,11 @@ public sealed class MatchController : MonoBehaviour {
     
 	public void ClearPendingMatches()
     {
-        Debug.Log("PENDING COLORS TO REMOVE: "+ pendingDataDictionary.Count+" COLORS!");
+        //Debug.Log("PENDING COLORS TO REMOVE: "+ pendingDataDictionary.Count+" COLORS!");
         int totalItemsRemoved= 0;
         foreach (ColorIndex colorKey in pendingDataDictionary.Keys)
         {
-            Debug.Log("CLEARING COLORKEY: " + colorKey.ToString());
+            //Debug.Log("CLEARING COLORKEY: " + colorKey.ToString());
             for (int i = 0; i < pendingDataDictionary[colorKey].Count;i++)
             {
                 totalItemsRemoved++;

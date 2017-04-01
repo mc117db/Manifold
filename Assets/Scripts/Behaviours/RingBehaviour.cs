@@ -139,6 +139,38 @@ public class RingBehaviour : MonoBehaviour {
             return true;
         }
     }
+    public bool CheckIfCanCombine (RingData other)
+    {
+        bool conflict = false;
+        #region TIER CHECKS
+        // OUTER
+        if (currentRingData.Outer)
+        {
+            if(other.Outer)
+            {
+                conflict = true;
+            }
+        }
+        // MIDDLE
+        if (currentRingData.Middle)
+        {
+            if (other.Middle)
+            {
+                conflict = true;
+            }
+        }
+     
+        // INNER
+        if (currentRingData.Inner)
+        {
+            if (other.Inner)
+            {
+                conflict = true;
+            }
+        }
+        #endregion
+        return conflict;
+    }
     public void RemoveColor (ColorIndex index)
     {
         RingData newState = currentRingData;

@@ -46,6 +46,17 @@ public class RingPointManager : MonoBehaviour, IDropHandler {
         }
         GetComponent<ReferencePointBehaviour>().CheckNeighboursForColor(Ring.CurrentRingData.ringColors);
     }
+    public bool CheckPointIfCanAccept(RingData other)
+    {
+        if (ring)
+        {
+            return ring.CheckIfCanCombine(other);
+        }
+        else
+        {
+            return true;
+        }
+    }
     public void OnDrop(PointerEventData eventData)
     { 
         if (!Ring)
