@@ -19,9 +19,9 @@ public class RingFactory : MonoBehaviour {
 
     public void UpdateState()
     {
-        Debug.Log("RingFactory Update State");
+        //Debug.Log("RingFactory Update State");
         //ringsInDock = transform.childCount;
-        Debug.Log("Rings currently in dock: " + transform.childCount);
+        //Debug.Log("Rings currently in dock: " + transform.childCount);
 
         if (transform.childCount <= 0)
         {
@@ -55,7 +55,7 @@ public class RingFactory : MonoBehaviour {
 
     void CreateNewSet()
     {
-        Debug.Log("REFRESH");
+        //Debug.Log("REFRESH");
         //TODO Use pooling system to create the object
         for (int i = -1; i < 2; i++)
         {

@@ -9,22 +9,39 @@ public class GameState
 
 public class GameController : MonoBehaviour {
 
+    [Header("DEPENDECIES")]
 	public RingFactory RingFactoryComponent;
 	public ColorManager ColorManagerComponent;
-	public int setsRefreshed = 0;
+    [Space(20)]
+    [Header("GAME STATE")]
+    public int setsRefreshed = 0;
 	public int setsToNextLevel = 5;
     private int setsNextLevelIntial;
 	public int currentLevel = 1;
-    public delegate void onLoseEvent();
-    public static event onLoseEvent LoseEvent;
+    [Space(20)]
+    [Header("COUNTDOWN SETTINGS")]
+    public float MaxCountdownTime = 30f;
+    private float remainingCountdownTime;
+    public float additionalTimePerMatch = 10f;
+    public float additionalTimePerCombo = 5f;
+     
+    public delegate void OnEvent();
+    public static event OnEvent LoseEvent;
+    public static event OnEvent CountDownOverEvent;
 
 	void Start () {
-        setsNextLevelIntial = setsToNextLevel;
+        Restart();
         // Register to events
 		RingFactory.onRefreshSetEvent += SpawnRandomRingAtRandomPoint;
 		RingFactory.onRefreshSetEvent += AdvanceGameState;
         RingFactory.onStagingSetUpdateEvent += LoseStateCheck;
+        CountDownOverEvent += ForcePlayStagingSet;
 	}
+    void Restart ()
+    {
+        remainingCountdownTime = MaxCountdownTime;
+        setsNextLevelIntial = setsToNextLevel;
+    }
 	public void SpawnRandomRingAtRandomPoint ()
 	{
 		Debug.Log("GAME ACTION: Spawning Random Ring at Random Point");
@@ -48,17 +65,21 @@ public class GameController : MonoBehaviour {
 		}
         else
         {
-            Debug.Log("NO MORE SLOTS TO SPAWN");
+            //Debug.Log("NO MORE SLOTS TO SPAWN");
         }
 	}
+    public void ForcePlayStagingSet()
+    {
+        Debug.Log("GAME ACTION: Force play rings in staging area");
+    }
     public void LoseStateCheck (List<RingData> ringDataInStagingSet)
     {
-        Debug.Log("CHECKING IF LOSE");
+        //Debug.Log("CHECKING IF LOSE");
         foreach (ReferencePointBehaviour node in TransformationGrid.NODES)
         {
             if (!node.HaveRing())
             {
-                Debug.Log("LOSESTATECHECK: THERE IS A POINT STILL OPEN");
+                //Debug.Log("LOSESTATECHECK: THERE IS A POINT STILL OPEN");
                 return; // There is still available space in the grid, get out of state check
             }
             else
@@ -67,7 +88,7 @@ public class GameController : MonoBehaviour {
                 {
                     if (node.GetComponent<RingPointManager>().CheckPointIfCanAccept(ringData))
                     {
-                        Debug.Log("LOSESTATECHECK: THERE IS A RING STILL CANCOMBINE");
+                        //Debug.Log("LOSESTATECHECK: THERE IS A RING STILL CANCOMBINE");
                         return;
                     }
                 }
@@ -100,11 +121,30 @@ public class GameController : MonoBehaviour {
 				setsToNextLevel = setsNextLevelIntial;
 		}
 	}
-	// Use this for initialization
-	
-	
-	// Update is called once per frame
-	void Update () {
-		
+
+    #region Countdown Implementation
+    void DoCountdown()
+    {
+        remainingCountdownTime -= Time.deltaTime;
+        if (remainingCountdownTime <= 0)
+        {
+            if (CountDownOverEvent != null)
+            {
+                Debug.Log("GAME ACTION: COUNTDOWN OVER");
+                CountDownOverEvent();
+            }
+            remainingCountdownTime = MaxCountdownTime;
+        }
+    }
+    void AddAdditiontalTime(float time)
+    {
+        Debug.Log("GAME ACTION: Additional Time has been granted");
+        remainingCountdownTime = Mathf.Clamp(remainingCountdownTime + time, 0, MaxCountdownTime);
+    } 
+    #endregion
+
+    // Update is called once per frame
+    void Update () {
+        DoCountdown();
 	}
 }
