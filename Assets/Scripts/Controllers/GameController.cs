@@ -18,6 +18,7 @@ public class GameController : MonoBehaviour {
 	public int setsToNextLevel = 5;
     private int setsNextLevelIntial;
 	public int currentLevel = 1;
+    private List<RingData> RingsInStagingArea = new List<RingData>();
     [Space(20)]
     [Header("COUNTDOWN SETTINGS")]
     public float MaxCountdownTime = 30f;
@@ -30,17 +31,25 @@ public class GameController : MonoBehaviour {
     public static event OnEvent CountDownOverEvent;
 
 	void Start () {
-        Restart();
+        
         // Register to events
 		RingFactory.onRefreshSetEvent += SpawnRandomRingAtRandomPoint;
 		RingFactory.onRefreshSetEvent += AdvanceGameState;
         RingFactory.onStagingSetUpdateEvent += LoseStateCheck;
+        RingFactory.onStagingSetUpdateEvent += onStagingSetUpdate;
         CountDownOverEvent += ForcePlayStagingSet;
+        Restart();
+
 	}
     void Restart ()
     {
         remainingCountdownTime = MaxCountdownTime;
         setsNextLevelIntial = setsToNextLevel;
+        RingFactoryComponent.CreateNewSet();
+    }
+    public void onStagingSetUpdate(List<RingData> listOfRingsInStagingSet)
+    {
+        RingsInStagingArea = listOfRingsInStagingSet;
     }
 	public void SpawnRandomRingAtRandomPoint ()
 	{
@@ -68,10 +77,43 @@ public class GameController : MonoBehaviour {
             //Debug.Log("NO MORE SLOTS TO SPAWN");
         }
 	}
+
+    public void SpawnRingDataAtRandomPoint(RingData ringData)
+    {
+        List<ReferencePointBehaviour> availablePoints = new List<ReferencePointBehaviour>();
+		foreach (ReferencePointBehaviour node in TransformationGrid.NODES)
+		{
+			//Debug.Log("CHECK");
+			if (!node.HaveRing())
+			{
+				//Debug.Log("ADD NODE");
+				availablePoints.Add(node);
+			}
+		}
+		if (availablePoints.Count > 0)
+		{
+			if (RingFactoryComponent != null)
+			{
+				//Debug.Log("Available Points: "+availablePoints.Count);
+				RingFactoryComponent.SpawnRingDataAtPoint(ringData, availablePoints[Random.Range(0,availablePoints.Count-1)]);
+			}
+		}
+        else
+        {
+            Debug.Log("LOSE!");
+        }
+    }
+
     public void ForcePlayStagingSet()
     {
-        Debug.Log("GAME ACTION: Force play rings in staging area");
+        Debug.Log("GAME ACTION: Force play rings in staging area"+" TOTAL: "+RingsInStagingArea.Count);
+        for (int i = 0; i < RingsInStagingArea.Count; i++)
+        {
+            //SpawnRingDataAtRandomPoint(RingsInStagingArea[i]);
+            //RingFactoryComponent.CreateNewSet();
+        }
     }
+
     public void LoseStateCheck (List<RingData> ringDataInStagingSet)
     {
         //Debug.Log("CHECKING IF LOSE");

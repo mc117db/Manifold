@@ -6,9 +6,26 @@ public class RotationTransform : Transformation {
 
     public Vector3 rotation;
     public Vector2 rotationSensitivity = new Vector2 (0.1f,0.2f);
+    [Header("Animation")]
+    public bool autoRotateWhenNotDragging;
+    public float rotSpeed;
+    private Vector3 rotVector;
+
     void Start ()
     {
         DragOrbitTouchScript.mouseMovementDeltaChange += Rotate;
+        rotVector = Vector3.one * rotSpeed;
+    }
+    void Update()
+    {
+        if (autoRotateWhenNotDragging)
+        {
+            if(!Input.GetMouseButton(0))
+            {
+                rotation += Time.deltaTime * rotVector;
+                WrapEulerRotation(rotation);
+            }
+        }
     }
     private void Rotate (Vector2 delta)
     {

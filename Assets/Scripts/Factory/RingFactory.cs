@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RingFactory : MonoBehaviour {
+public sealed class RingFactory : MonoBehaviour {
 
     public GameObject RingPrefab;
     public float horizontalOffset = 2f;
@@ -12,9 +12,12 @@ public class RingFactory : MonoBehaviour {
     public static event onRefreshSet onRefreshSetEvent;
     public static event onStagingSetUpdate onStagingSetUpdateEvent;
 
+    void Awake ()
+    {
+
+    }
 	void Start () {
         RingPointManager.RingDropEvent += UpdateState;
-        CreateNewSet(); //TODO This will be called by the GameManager later
     }
 
     public void UpdateState()
@@ -40,6 +43,7 @@ public class RingFactory : MonoBehaviour {
         {
             if (onStagingSetUpdateEvent != null)
             {
+                Debug.Log("Updating Staging Set");
                 onStagingSetUpdateEvent(ringDataInUpdatedSet);
             }
         }
@@ -52,11 +56,27 @@ public class RingFactory : MonoBehaviour {
         
         point.GetComponent<RingPointManager>().AcceptSpawnedRing(ringComponent);
     }
+    public void SpawnRingDataAtPoint(RingData ringData, ReferencePointBehaviour point)
+    {
+        GameObject ring = Instantiate(RingPrefab);
+        RingBehaviour ringComponent = ring.GetComponent<RingBehaviour>();
+        ringComponent.CurrentRingData = ringData;
 
-    void CreateNewSet()
+        point.GetComponent<RingPointManager>().AcceptSpawnedRing(ringComponent);
+    }
+
+    public void CreateNewSet()
     {
         //Debug.Log("REFRESH");
         //TODO Use pooling system to create the object
+        if (transform.childCount>0)
+        {
+            foreach(Transform child in gameObject.transform)
+            {
+                Destroy(child);
+            }
+        }
+
         for (int i = -1; i < 2; i++)
         {
             GameObject ring = Instantiate(RingPrefab);   
@@ -65,6 +85,7 @@ public class RingFactory : MonoBehaviour {
             ring.GetComponent<RingBehaviour>().CurrentRingData = GenerateNewRingData();
             ring.GetComponent<RingScaleAnimationController>().GrowIn();
         }
+        UpdateState();
         //ringsInDock = transform.childCount;
     }
     RingData GenerateNewRingData ()
