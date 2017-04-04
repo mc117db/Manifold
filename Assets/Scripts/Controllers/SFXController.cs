@@ -11,7 +11,7 @@ public class SFXController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        MatchController.instance.OnMatchEventData += ListenToMatches;
+        MatchController.OnMatchEventData += ListenToMatches;
 	}
 	
 	// Update is called once per frame

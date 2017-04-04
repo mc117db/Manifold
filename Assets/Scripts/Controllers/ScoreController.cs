@@ -67,6 +67,13 @@ public class ScoreController : MonoBehaviour {
 			{
 				ComboUpdateEvent();
 			}
+            if (ComboIncreaseEvent != null)
+            {
+                if (currentComboNumber > 0)
+                {
+                    ComboIncreaseEvent();
+                }
+            }
 		}
 	}
 	private ScoreImplementationData currentScoreImplementation = new ScoreImplementationData(5,1.5f,1.5f);
@@ -76,8 +83,9 @@ public class ScoreController : MonoBehaviour {
     public delegate void OnUpdateEventReturnInt(int valueToReturn);
 
     public event OnUpdateEventReturnInt ScoreValueUpdateEvent;
-	public event OnUpdateEvent ScoreUpdateEvent; 
-	public event OnUpdateEvent ComboUpdateEvent;
+	public static event OnUpdateEvent ScoreUpdateEvent; 
+	public static event OnUpdateEvent ComboUpdateEvent;
+    public static event OnUpdateEvent ComboIncreaseEvent;
 	// Use this for initialization
 	void Awake()
 	{
@@ -89,7 +97,7 @@ public class ScoreController : MonoBehaviour {
 			Debug.Log("You cannot have more than one ScoreManager!");
 			Destroy(this);
 		}
-		MatchController.instance.OnMatchEventTotalItemsRemoved += RingsConsumed;
+		MatchController.OnMatchEventTotalItemsRemoved += RingsConsumed;
 	}
 	void RingsConsumed(int totalRingsConsumed)
 	{

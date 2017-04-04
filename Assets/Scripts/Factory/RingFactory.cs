@@ -68,12 +68,12 @@ public sealed class RingFactory : MonoBehaviour {
     public void CreateNewSet()
     {
         //Debug.Log("REFRESH");
-        //TODO Use pooling system to create the object
+        //TODO Use pooling system to create the object, and destroying it.
         if (transform.childCount>0)
         {
             foreach(Transform child in gameObject.transform)
             {
-                Destroy(child);
+                Destroy(child.gameObject);
             }
         }
 

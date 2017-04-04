@@ -6,10 +6,12 @@ public sealed class MatchController : MonoBehaviour {
 
 	// Use this for initialization
     public static MatchController instance;
+    public delegate void OnMatchEvent();
     public delegate void OnMatch(int totalNoOfItemsRemoved);
-    public delegate void OnMatchData(MatchData matchDataRemoved); 
-    public event OnMatch OnMatchEventTotalItemsRemoved;
-    public event OnMatchData OnMatchEventData;
+    public delegate void OnMatchData(MatchData matchDataRemoved);
+    public static event OnMatchEvent OnMatchEventHappen; 
+    public static event OnMatch OnMatchEventTotalItemsRemoved;
+    public static event OnMatchData OnMatchEventData;
 
     private Dictionary<ColorIndex,List<RingBehaviour>> pendingDataDictionary = new Dictionary<ColorIndex,List<RingBehaviour>>();
     //private List<MatchData> pendingMatchData = new List<MatchData>();
@@ -60,6 +62,10 @@ public sealed class MatchController : MonoBehaviour {
             if (OnMatchEventTotalItemsRemoved != null)
             {
                 OnMatchEventTotalItemsRemoved(totalItemsRemoved);
+            }
+            if (OnMatchEventHappen != null)
+            {
+                OnMatchEventHappen();
             }
         }
         pendingDataDictionary.Clear();

@@ -37,7 +37,12 @@ public class GameController : MonoBehaviour {
 		RingFactory.onRefreshSetEvent += AdvanceGameState;
         RingFactory.onStagingSetUpdateEvent += LoseStateCheck;
         RingFactory.onStagingSetUpdateEvent += onStagingSetUpdate;
-        CountDownOverEvent += ForcePlayStagingSet;
+
+        // Countdown Events Dependecies
+        MatchController.OnMatchEventHappen += OnMatchAddTime;
+        ScoreController.ComboIncreaseEvent += OnComboAddTime;
+
+        CountDownOverEvent += ForcePlayStagingSet; // Internal method
         Restart();
 
 	}
@@ -109,9 +114,9 @@ public class GameController : MonoBehaviour {
         Debug.Log("GAME ACTION: Force play rings in staging area"+" TOTAL: "+RingsInStagingArea.Count);
         for (int i = 0; i < RingsInStagingArea.Count; i++)
         {
-            //SpawnRingDataAtRandomPoint(RingsInStagingArea[i]);
-            //RingFactoryComponent.CreateNewSet();
+            SpawnRingDataAtRandomPoint(RingsInStagingArea[i]);
         }
+        RingFactoryComponent.CreateNewSet();
     }
 
     public void LoseStateCheck (List<RingData> ringDataInStagingSet)
@@ -172,11 +177,19 @@ public class GameController : MonoBehaviour {
         {
             if (CountDownOverEvent != null)
             {
-                Debug.Log("GAME ACTION: COUNTDOWN OVER");
+                Debug.Log("GAME EVENT: COUNTDOWN OVER");
                 CountDownOverEvent();
             }
             remainingCountdownTime = MaxCountdownTime;
         }
+    }
+    void OnMatchAddTime()
+    {
+        AddAdditiontalTime(additionalTimePerMatch);
+    }
+    void OnComboAddTime()
+    {
+        AddAdditiontalTime(additionalTimePerCombo);
     }
     void AddAdditiontalTime(float time)
     {

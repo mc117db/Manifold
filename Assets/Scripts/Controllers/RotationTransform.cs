@@ -9,6 +9,8 @@ public class RotationTransform : Transformation {
     [Header("Animation")]
     public bool autoRotateWhenNotDragging;
     public float rotSpeed;
+    public float rotRecoverySpeed = 2f;
+    private float rotLerpVal;
     private Vector3 rotVector;
 
     void Start ()
@@ -20,11 +22,18 @@ public class RotationTransform : Transformation {
     {
         if (autoRotateWhenNotDragging)
         {
+
             if(!Input.GetMouseButton(0))
             {
-                rotation += Time.deltaTime * rotVector;
-                WrapEulerRotation(rotation);
+                rotLerpVal = Mathf.Lerp(rotLerpVal, 1, Time.deltaTime * rotRecoverySpeed);
             }
+            else
+            {
+                rotLerpVal = Mathf.Lerp(rotLerpVal, 0, Time.deltaTime * rotRecoverySpeed);
+            }
+            rotVector = Vector3.Lerp(Vector3.zero, Vector3.one * rotSpeed, rotLerpVal);
+            rotation += Time.deltaTime * rotVector;
+            WrapEulerRotation(rotation);
         }
     }
     private void Rotate (Vector2 delta)
