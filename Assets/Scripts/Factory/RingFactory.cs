@@ -43,7 +43,7 @@ public sealed class RingFactory : MonoBehaviour {
         {
             if (onStagingSetUpdateEvent != null)
             {
-                Debug.Log("Updating Staging Set");
+                //Debug.Log("Updating Staging Set");
                 onStagingSetUpdateEvent(ringDataInUpdatedSet);
             }
         }

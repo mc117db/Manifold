@@ -23,12 +23,46 @@ public class GameController : MonoBehaviour {
     [Header("COUNTDOWN SETTINGS")]
     public float MaxCountdownTime = 30f;
     private float remainingCountdownTime;
+    private float remainingTimeLerpVal;
     public float additionalTimePerMatch = 10f;
     public float additionalTimePerCombo = 5f;
-     
+
+    public float RemainingCountdownTime
+    {
+        get
+        {
+            return remainingCountdownTime;
+        }
+
+        set
+        {
+            remainingCountdownTime = value;
+            RemainingTimeLerpVal = Mathf.InverseLerp(0, MaxCountdownTime, RemainingCountdownTime);
+        }
+    }
+
+    public float RemainingTimeLerpVal
+    {
+        get
+        {
+            return remainingTimeLerpVal;
+        }
+
+        set
+        {
+            remainingTimeLerpVal = value;
+            if (CountdownLerpEvent != null)
+            {
+                CountdownLerpEvent(remainingTimeLerpVal);
+            }
+        }
+    }
+
+    public delegate void OnLerpChange(float lerpVal);
     public delegate void OnEvent();
     public static event OnEvent LoseEvent;
     public static event OnEvent CountDownOverEvent;
+    public static event OnLerpChange CountdownLerpEvent;
 
 	void Start () {
         
@@ -48,7 +82,7 @@ public class GameController : MonoBehaviour {
 	}
     void Restart ()
     {
-        remainingCountdownTime = MaxCountdownTime;
+        RemainingCountdownTime = MaxCountdownTime;
         setsNextLevelIntial = setsToNextLevel;
         RingFactoryComponent.CreateNewSet();
     }
@@ -172,15 +206,15 @@ public class GameController : MonoBehaviour {
     #region Countdown Implementation
     void DoCountdown()
     {
-        remainingCountdownTime -= Time.deltaTime;
-        if (remainingCountdownTime <= 0)
+        RemainingCountdownTime -= Time.deltaTime;
+        if (RemainingCountdownTime <= 0)
         {
             if (CountDownOverEvent != null)
             {
                 Debug.Log("GAME EVENT: COUNTDOWN OVER");
                 CountDownOverEvent();
             }
-            remainingCountdownTime = MaxCountdownTime;
+            RemainingCountdownTime = MaxCountdownTime;
         }
     }
     void OnMatchAddTime()
@@ -194,7 +228,7 @@ public class GameController : MonoBehaviour {
     void AddAdditiontalTime(float time)
     {
         Debug.Log("GAME ACTION: Additional Time has been granted");
-        remainingCountdownTime = Mathf.Clamp(remainingCountdownTime + time, 0, MaxCountdownTime);
+        RemainingCountdownTime = Mathf.Clamp(RemainingCountdownTime + time, 0, MaxCountdownTime);
     } 
     #endregion
 
