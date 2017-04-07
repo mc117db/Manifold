@@ -9,11 +9,16 @@ public class ScaleTransform : Transformation
     public Vector3 scale;
     //TODO shakeOnStagingAreaEvent might need to be shifted to a settings manager in the future.
     public bool shakeOnStagingAreaEvent = true;
+    public bool shakeOnCountdownOverEvent = true;
     public void Start()
     {
         if (shakeOnStagingAreaEvent)
         {
             RingFactory.onRefreshSetEvent += Shake;
+        }
+        if (shakeOnCountdownOverEvent)
+        {
+            GameController.CountDownOverEvent += Shake;
         }
     }
     public float Size
