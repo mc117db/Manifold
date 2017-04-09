@@ -88,7 +88,7 @@ public sealed class RingFactory : MonoBehaviour {
         UpdateState();
         //ringsInDock = transform.childCount;
     }
-    RingData GenerateNewRingData ()
+    public RingData GenerateNewRingData ()
     {
         RingData data = new RingData();
         data.Inner = Random.value < 0.5 ? true : false;

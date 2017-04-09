@@ -27,6 +27,9 @@ public class GameController : MonoBehaviour {
     public float additionalTimePerMatch = 10f;
     public float additionalTimePerCombo = 5f;
 
+    private ReferencePointBehaviour targetReferencePointToSpawnWhenStagingSetUpdate;
+    private RingData ringDataToSpawnWhenStagingSetUpdate;
+
     public float RemainingCountdownTime
     {
         get
@@ -40,7 +43,6 @@ public class GameController : MonoBehaviour {
             RemainingTimeLerpVal = Mathf.InverseLerp(0, MaxCountdownTime, RemainingCountdownTime);
         }
     }
-
     public float RemainingTimeLerpVal
     {
         get
@@ -57,17 +59,52 @@ public class GameController : MonoBehaviour {
             }
         }
     }
+    public ReferencePointBehaviour TargetReferencePointToSpawnWhenStagingSetUpdate
+    {
+        set
+        {
+            targetReferencePointToSpawnWhenStagingSetUpdate = value;
+            if (TargetReferencePointToSpawnWhenStagingSetUpdateChange != null)
+            {
+                TargetReferencePointToSpawnWhenStagingSetUpdateChange(targetReferencePointToSpawnWhenStagingSetUpdate);
+            }
+        }
+    }
+    public RingData RingDataToSpawnWhenStagingSetUpdate
+    {
+        get
+        {
+            return ringDataToSpawnWhenStagingSetUpdate;
+        }
 
+        set
+        {
+            ringDataToSpawnWhenStagingSetUpdate = value;
+            if (RingDataToSpawnWhenStagingSetUpdateChange != null)
+            {
+                RingDataToSpawnWhenStagingSetUpdateChange(ringDataToSpawnWhenStagingSetUpdate);
+            }
+        }
+    }
+
+    #region Events
     public delegate void OnLerpChange(float lerpVal);
     public delegate void OnEvent();
+    public delegate void OnReferencePoint(ReferencePointBehaviour point);
+    public delegate void OnRingData(RingData data);
     public static event OnEvent LoseEvent;
     public static event OnEvent CountDownOverEvent;
+    public static event OnEvent AnomalyEventSuccess;
+    public static event OnEvent AnomalyEventFail;
     public static event OnLerpChange CountdownLerpEvent;
+    public static event OnReferencePoint TargetReferencePointToSpawnWhenStagingSetUpdateChange;
+    public static event OnRingData RingDataToSpawnWhenStagingSetUpdateChange;
+    #endregion
 
-	void Start () {
+    void Start () {
         
         // Register to events
-		RingFactory.onRefreshSetEvent += SpawnRandomRingAtRandomPoint;
+		RingFactory.onRefreshSetEvent += onAnomalyEvent;
 		RingFactory.onRefreshSetEvent += AdvanceGameState;
         RingFactory.onStagingSetUpdateEvent += LoseStateCheck;
         RingFactory.onStagingSetUpdateEvent += onStagingSetUpdate;
@@ -90,58 +127,106 @@ public class GameController : MonoBehaviour {
     {
         RingsInStagingArea = listOfRingsInStagingSet;
     }
-	public void SpawnRandomRingAtRandomPoint ()
-	{
-		Debug.Log("GAME ACTION: Spawning Random Ring at Random Point");
-		List<ReferencePointBehaviour> availablePoints = new List<ReferencePointBehaviour>();
-		foreach (ReferencePointBehaviour node in TransformationGrid.NODES)
-		{
-			//Debug.Log("CHECK");
-			if (!node.HaveRing())
-			{
-				//Debug.Log("ADD NODE");
-				availablePoints.Add(node);
-			}
-		}
-		if (availablePoints.Count > 0)
-		{
-			if (RingFactoryComponent != null)
-			{
-				//Debug.Log("Available Points: "+availablePoints.Count);
-				RingFactoryComponent.SpawnRandomRingAtPoint(availablePoints[Random.Range(0,availablePoints.Count-1)]);
-			}
-		}
+    public void onAnomalyEvent()
+    {
+        if (targetReferencePointToSpawnWhenStagingSetUpdate == null)
+        {
+            List<ReferencePointBehaviour> availablePoints = new List<ReferencePointBehaviour>();
+            foreach (ReferencePointBehaviour node in TransformationGrid.NODES)
+            {
+                //Debug.Log("CHECK");
+                if (!node.HaveRing())
+                {
+                    //Debug.Log("ADD NODE");
+                    availablePoints.Add(node);
+                }
+            }
+            if (availablePoints.Count > 0)
+            {
+                TargetReferencePointToSpawnWhenStagingSetUpdate = availablePoints[Random.Range(0, availablePoints.Count - 1)];
+            }
+            else
+            {
+                TargetReferencePointToSpawnWhenStagingSetUpdateChange = null;
+                return;
+            }
+            RingDataToSpawnWhenStagingSetUpdate = RingFactoryComponent.GenerateNewRingData();
+        }
+        else
+        {
+            if (!targetReferencePointToSpawnWhenStagingSetUpdate.HaveRing())
+            {
+                RingFactoryComponent.SpawnRingDataAtPoint(RingDataToSpawnWhenStagingSetUpdate, targetReferencePointToSpawnWhenStagingSetUpdate);
+                if (AnomalyEventSuccess != null)
+                {
+                    AnomalyEventSuccess();
+                }
+            }
+            else
+            {
+                if (AnomalyEventFail != null)
+                {
+                    AnomalyEventFail();
+                }
+            }
+            TargetReferencePointToSpawnWhenStagingSetUpdate = null;
+            RingDataToSpawnWhenStagingSetUpdate = new RingData();
+        }
+    }
+    #region Spawning Implementation 
+    public void SpawnRandomRingAtRandomPoint()
+    {
+        Debug.Log("GAME ACTION: Spawning Random Ring at Random Point");
+        List<ReferencePointBehaviour> availablePoints = new List<ReferencePointBehaviour>();
+        foreach (ReferencePointBehaviour node in TransformationGrid.NODES)
+        {
+            //Debug.Log("CHECK");
+            if (!node.HaveRing())
+            {
+                //Debug.Log("ADD NODE");
+                availablePoints.Add(node);
+            }
+        }
+        if (availablePoints.Count > 0)
+        {
+            if (RingFactoryComponent != null)
+            {
+                //Debug.Log("Available Points: "+availablePoints.Count);
+                RingFactoryComponent.SpawnRandomRingAtPoint(availablePoints[Random.Range(0, availablePoints.Count - 1)]);
+            }
+        }
         else
         {
             //Debug.Log("NO MORE SLOTS TO SPAWN");
         }
-	}
+    }
 
     public void SpawnRingDataAtRandomPoint(RingData ringData)
     {
         List<ReferencePointBehaviour> availablePoints = new List<ReferencePointBehaviour>();
-		foreach (ReferencePointBehaviour node in TransformationGrid.NODES)
-		{
-			//Debug.Log("CHECK");
-			if (!node.HaveRing())
-			{
-				//Debug.Log("ADD NODE");
-				availablePoints.Add(node);
-			}
-		}
-		if (availablePoints.Count > 0)
-		{
-			if (RingFactoryComponent != null)
-			{
-				//Debug.Log("Available Points: "+availablePoints.Count);
-				RingFactoryComponent.SpawnRingDataAtPoint(ringData, availablePoints[Random.Range(0,availablePoints.Count-1)]);
-			}
-		}
+        foreach (ReferencePointBehaviour node in TransformationGrid.NODES)
+        {
+            //Debug.Log("CHECK");
+            if (!node.HaveRing())
+            {
+                //Debug.Log("ADD NODE");
+                availablePoints.Add(node);
+            }
+        }
+        if (availablePoints.Count > 0)
+        {
+            if (RingFactoryComponent != null)
+            {
+                //Debug.Log("Available Points: "+availablePoints.Count);
+                RingFactoryComponent.SpawnRingDataAtPoint(ringData, availablePoints[Random.Range(0, availablePoints.Count - 1)]);
+            }
+        }
         else
         {
             Debug.Log("LOSE!");
         }
-    }
+    } 
+    #endregion
 
     public void ForcePlayStagingSet()
     {
@@ -151,32 +236,6 @@ public class GameController : MonoBehaviour {
             SpawnRingDataAtRandomPoint(RingsInStagingArea[i]);
         }
         RingFactoryComponent.CreateNewSet();
-    }
-
-    public void LoseStateCheck (List<RingData> ringDataInStagingSet)
-    {
-        //Debug.Log("CHECKING IF LOSE");
-        foreach (ReferencePointBehaviour node in TransformationGrid.NODES)
-        {
-            if (!node.HaveRing())
-            {
-                //Debug.Log("LOSESTATECHECK: THERE IS A POINT STILL OPEN");
-                return; // There is still available space in the grid, get out of state check
-            }
-            else
-            {
-                foreach (RingData ringData in ringDataInStagingSet)
-                {
-                    if (node.GetComponent<RingPointManager>().CheckPointIfCanAccept(ringData))
-                    {
-                        //Debug.Log("LOSESTATECHECK: THERE IS A RING STILL CANCOMBINE");
-                        return;
-                    }
-                }
-            }
-        }
-        Debug.Log("YOU LOSE!");
-
     }
     public void RemoveAllRings ()
     {
@@ -202,7 +261,31 @@ public class GameController : MonoBehaviour {
 				setsToNextLevel = setsNextLevelIntial;
 		}
 	}
+    public void LoseStateCheck(List<RingData> ringDataInStagingSet)
+    {
+        //Debug.Log("CHECKING IF LOSE");
+        foreach (ReferencePointBehaviour node in TransformationGrid.NODES)
+        {
+            if (!node.HaveRing())
+            {
+                //Debug.Log("LOSESTATECHECK: THERE IS A POINT STILL OPEN");
+                return; // There is still available space in the grid, get out of state check
+            }
+            else
+            {
+                foreach (RingData ringData in ringDataInStagingSet)
+                {
+                    if (node.GetComponent<RingPointManager>().CheckPointIfCanAccept(ringData))
+                    {
+                        //Debug.Log("LOSESTATECHECK: THERE IS A RING STILL CANCOMBINE");
+                        return;
+                    }
+                }
+            }
+        }
+        Debug.Log("YOU LOSE!");
 
+    }
     #region Countdown Implementation
     void DoCountdown()
     {
