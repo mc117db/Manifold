@@ -6,10 +6,17 @@ using UnityEngine;
 
 public class SFXController : MonoBehaviour {
 
+    [Header("Prefabs")]
     public GameObject prefabToSpawnOnRingConsumeEvent_FALLBACK;
     public GameObject prefabToSpawnAlongAxis_FALLBACK;
+    public GameObject prefabToSpawnPoint_FALLBACK;
     public GameObject blueSFXRing, greenSFXRing, purpleSFXRing, redSFXRing, yellowSFXRing;
     public GameObject blueAxisBlast, greenAxisBlast, purpleAxisBlast, redAxisBlast, yellowAxisBlast;
+    public GameObject bluePoint, greenPoint, purplePoint, redPoint, yellowPoint;
+    [Space(10)]
+    [Header("Point SFX Settings")]
+    public Vector3 scoreTextPos;
+    public float intVel, spd, deltaMin, deltaMax;
 
     // Use this for initialization
     void Start () {
@@ -26,10 +33,15 @@ public class SFXController : MonoBehaviour {
         Vector3 totalPosValue = new Vector3(0,0,0);
         foreach (RingBehaviour ring in data.markedObjects)
         {
+            // Spawn Rings
             totalPosValue += ring.transform.position;
             GameObject sfxRing = Instantiate(GetSFXRingFromColorCode(data.colorMark));
             sfxRing.AddComponent<SFX_DestroyAfterSeconds>();
-            sfxRing.transform.position = ring.transform.position; 
+            sfxRing.transform.position = ring.transform.position;
+            // Spawn Points
+            GameObject sfxPoint = Instantiate(GetSFXPoint(data.colorMark));
+            sfxPoint.transform.position = ring.transform.position;
+            sfxPoint.AddComponent<SFX_PointParticleBehaviour>().Initialize(intVel,spd,deltaMin,deltaMax,scoreTextPos);
         }
         if (data.markedObjects.Count > 0)
         {
@@ -86,6 +98,30 @@ public class SFXController : MonoBehaviour {
                 return blueSFXRing;
             default:
                 return prefabToSpawnOnRingConsumeEvent_FALLBACK;
+        }
+    }
+    GameObject GetSFXPoint(ColorIndex index)
+    {
+        switch (index)
+        {
+            case ColorIndex.Alpha:
+                return redPoint;
+            case ColorIndex.Bravo:
+                return bluePoint;
+            case ColorIndex.Charlie:
+                return greenPoint;
+            case ColorIndex.Delta:
+                return purplePoint;
+            case ColorIndex.Echo:
+                return yellowPoint;
+            case ColorIndex.Fanta:
+                return purplePoint;
+            case ColorIndex.Gamma:
+                return purplePoint;
+            case ColorIndex.Hotel:
+                return bluePoint;
+            default:
+                return prefabToSpawnPoint_FALLBACK;
         }
     }
 }
