@@ -10,8 +10,8 @@ public class ScoreTextUpdater : MonoBehaviour {
     private Vector3 initPos;
 	// Use this for initialization
 	void Start () {
-        ScoreController.instance.ScoreValueUpdateEvent += UpdateText;
-        SFX_PointParticleBehaviour.OnFinishLerpEvent += ShakeText;
+        ScoreController.ScoreValueUpdateEvent += UpdateText;
+        SFX_PointParticleBehaviour.OnFinishLerpEvent += PunchText;
         initPos = transform.position;
 	}
 	
@@ -19,6 +19,10 @@ public class ScoreTextUpdater : MonoBehaviour {
 	void UpdateText (int valueToPush) {
         textComponent.text = valueToPush.ToString();
         ShakeText();
+    }
+    void PunchText()
+    {
+        DOTween.Punch(() => transform.position, x => transform.position = x,Vector3.up*6f, 0.7f, 10, 0.7f).OnComplete(delegate { transform.position = initPos; });
     }
     void ShakeText()
     {

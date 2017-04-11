@@ -65,7 +65,7 @@ public class ScoreController : MonoBehaviour {
 			currentComboNumber = value;
 			if (ComboUpdateEvent != null)
 			{
-				ComboUpdateEvent();
+				ComboUpdateEvent(currentComboNumber);
 			}
             if (ComboIncreaseEvent != null)
             {
@@ -82,9 +82,9 @@ public class ScoreController : MonoBehaviour {
 	public delegate void OnUpdateEvent ();
     public delegate void OnUpdateEventReturnInt(int valueToReturn);
 
-    public event OnUpdateEventReturnInt ScoreValueUpdateEvent;
+    public static event OnUpdateEventReturnInt ScoreValueUpdateEvent;
 	public static event OnUpdateEvent ScoreUpdateEvent; 
-	public static event OnUpdateEvent ComboUpdateEvent;
+	public static event OnUpdateEventReturnInt ComboUpdateEvent;
     public static event OnUpdateEvent ComboIncreaseEvent;
 	// Use this for initialization
 	void Awake()
