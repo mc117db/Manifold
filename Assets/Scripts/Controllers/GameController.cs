@@ -8,7 +8,7 @@ public class GameState
 }
 
 public class GameController : MonoBehaviour {
-
+    public enum GameState {Running,Lose,Paused}
     [Header("DEPENDECIES")]
 	public RingFactory RingFactoryComponent;
 	public ColorManager ColorManagerComponent;
@@ -19,6 +19,8 @@ public class GameController : MonoBehaviour {
     private int setsNextLevelIntial;
 	public int currentLevel = 1;
     private List<RingData> RingsInStagingArea = new List<RingData>();
+    [Space(20)]
+    public GameState GAMESTATE;
     [Space(20)]
     [Header("COUNTDOWN SETTINGS")]
     public float MaxCountdownTime = 30f;
@@ -122,6 +124,8 @@ public class GameController : MonoBehaviour {
         RemainingCountdownTime = MaxCountdownTime;
         setsNextLevelIntial = setsToNextLevel;
         RingFactoryComponent.CreateNewSet();
+        RemoveAllRings();
+        GAMESTATE = GameState.Running;
     }
     public void onStagingSetUpdate(List<RingData> listOfRingsInStagingSet)
     {
@@ -223,7 +227,11 @@ public class GameController : MonoBehaviour {
         }
         else
         {
-            Debug.Log("LOSE!");
+            if (GAMESTATE != GameState.Lose)
+            {
+                Debug.LogWarning("GAMEACTION: LOSE!");
+                GAMESTATE = GameState.Lose;
+            }
         }
     } 
     #endregion
