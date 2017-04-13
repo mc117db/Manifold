@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class RotationTransform : Transformation {
 
+    private bool canRotate;
     public Vector3 rotation;
     public Vector2 rotationSensitivity = new Vector2 (0.1f,0.2f);
     [Header("Animation")]
@@ -17,13 +18,18 @@ public class RotationTransform : Transformation {
     {
         DragOrbitTouchScript.mouseMovementDeltaChange += Rotate;
         rotVector = Vector3.one * rotSpeed;
+        GameController.GameStateChange += ListenToGameState;
+    }
+    public void ListenToGameState(GameState state)
+    {
+        canRotate = state == GameState.Running ? true : false;
     }
     void Update()
     {
         if (autoRotateWhenNotDragging)
         {
 
-            if(!Input.GetMouseButton(0))
+            if(!Input.GetMouseButton(0) || !canRotate)
             {
                 rotLerpVal = Mathf.Lerp(rotLerpVal, 1, Time.deltaTime * rotRecoverySpeed);
             }
@@ -36,9 +42,9 @@ public class RotationTransform : Transformation {
             WrapEulerRotation(rotation);
         }
     }
-    private void Rotate (Vector2 delta)
+    private void Rotate(Vector2 delta)
     {
-        if (delta.magnitude > 100)
+        if (delta.magnitude > 100 || !canRotate)
         {
             return;
         }

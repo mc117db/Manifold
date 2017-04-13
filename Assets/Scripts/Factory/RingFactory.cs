@@ -12,10 +12,6 @@ public sealed class RingFactory : MonoBehaviour {
     public static event onRefreshSet onRefreshSetEvent;
     public static event onStagingSetUpdate onStagingSetUpdateEvent;
 
-    void Awake ()
-    {
-
-    }
 	void Start () {
         RingPointManager.RingDropEvent += UpdateState;
     }

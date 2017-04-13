@@ -8,11 +8,13 @@ public class ScoreTextUpdater : MonoBehaviour {
 
     public Text textComponent;
     private Vector3 initPos;
+    private Vector3 initScale;
 	// Use this for initialization
 	void Start () {
         ScoreController.ScoreValueUpdateEvent += UpdateText;
         SFX_PointParticleBehaviour.OnFinishLerpEvent += PunchText;
         initPos = transform.position;
+        initScale = transform.localScale;
 	}
 	
 	// Update is called once per frame
@@ -22,7 +24,10 @@ public class ScoreTextUpdater : MonoBehaviour {
     }
     void PunchText()
     {
-        DOTween.Punch(() => transform.position, x => transform.position = x,Vector3.up*6f, 0.7f, 10, 0.7f).OnComplete(delegate { transform.position = initPos; });
+        if (transform.localScale.magnitude > (Vector3.one * 0.5f).magnitude)
+        {
+            transform.DOPunchScale(Vector3.one * -1 * 0.1f, 0.1f).OnComplete(delegate { transform.DOScale(initScale, 0.1f); }).OnStart( delegate { transform.localScale = initScale; } );
+        }
     }
     void ShakeText()
     {

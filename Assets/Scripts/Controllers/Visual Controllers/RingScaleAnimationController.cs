@@ -5,7 +5,7 @@ using DG.Tweening;
 
 public class RingScaleAnimationController : MonoBehaviour {
 
-	
+    Vector3 initScale = Vector3.one;
 	// Use this for initialization
 	void Start () {
 		gameObject.GetComponent<RingBehaviour>().stateChangeEvent += Shake;
@@ -18,7 +18,8 @@ public class RingScaleAnimationController : MonoBehaviour {
 	}
 	public void GrowIn()
 	{
-		transform.localScale = Vector3.zero;
-		transform.DOScale(Vector3.one,0.2f).SetEase(Ease.InOutSine);
+        initScale = transform.localScale;
+        transform.localScale = Vector3.zero;
+		transform.DOScale(initScale, 0.2f).SetEase(Ease.InOutSine);
 	}
 }

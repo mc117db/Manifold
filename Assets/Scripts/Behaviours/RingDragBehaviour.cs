@@ -33,14 +33,13 @@ public class RingDragBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandler,
         RingDragBehaviour.dragging = false;
     }
     #region Interface Implementations
-
-    void Start ()
+    void Start()
     {
         CanDrag = true;
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (!CanDrag)
+        if (!CanDrag || GameController.instance.GAMESTATE != GameState.Running)
         {
             return;
         }
@@ -57,12 +56,14 @@ public class RingDragBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandler,
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (!CanDrag)
+        if (!CanDrag || GameController.instance.GAMESTATE != GameState.Running)
         {
             return;
         }
         if (Input.touchCount > 1)
+        {
             return;
+        }
 
         transform.position = Camera.main.ScreenToWorldPoint(
             new Vector3(Input.mousePosition.x, Input.mousePosition.y, _zDistanceToCamera)
@@ -71,19 +72,22 @@ public class RingDragBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandler,
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        dragging = false;
-        if (!CanDrag)
+        if (dragging)
         {
-            // This means its attached to something
-            return;
+            dragging = false;
+            if (!CanDrag)
+            {
+                // This means its attached to something
+                return;
+            }
+            if (failDragEvent != null)
+            {
+                failDragEvent();
+            }
+            transform.position = _startPosition;
+            DraggedInstance = null;
+            _offsetToMouse = Vector3.zero;
         }
-        if (failDragEvent != null)
-        {
-            failDragEvent();
-        }
-        transform.position = _startPosition;  
-        DraggedInstance = null;
-        _offsetToMouse = Vector3.zero;
     }
     public void OnDragOverAndCombine()
     {

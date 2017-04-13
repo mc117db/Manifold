@@ -38,7 +38,7 @@ public class SFX_PointParticleBehaviour : MonoBehaviour {
         lerpVal = Mathf.Clamp01(lerpVal + (lerpDelta * Time.deltaTime));
         velocity = Mathfx.Coserp(velocity, endDir, lerpVal);
         transform.position += velocity * speed * Time.deltaTime;
-        if (lerpVal >= 0.5f)
+        if (Vector3.Distance(endPoint,transform.position)<1f)
         {
             if (OnFinishLerpEvent != null)
             {

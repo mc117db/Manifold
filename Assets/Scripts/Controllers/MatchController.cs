@@ -4,7 +4,8 @@ using UnityEngine;
 
 public sealed class MatchController : MonoBehaviour {
 
-	// Use this for initialization
+    // Use this for initialization
+    public bool DEV_PREVENTMATCHES;
     public static MatchController instance;
     public delegate void OnMatchEvent();
     public delegate void OnMatch(int totalNoOfItemsRemoved);
@@ -24,6 +25,10 @@ public sealed class MatchController : MonoBehaviour {
         {
             Destroy(this);
         }
+        if (DEV_PREVENTMATCHES)
+        {
+            Debug.LogWarning("DEV: MATCHCONTROLLER IS PREVENTING MATCHES");
+        }
 	}
     public void StoreMatch (MatchData matchData)
     {
@@ -39,6 +44,10 @@ public sealed class MatchController : MonoBehaviour {
     
 	public void ClearPendingMatches()
     {
+        if (DEV_PREVENTMATCHES)
+        {
+            return;
+        }
         //Debug.Log("PENDING COLORS TO REMOVE: "+ pendingDataDictionary.Count+" COLORS!");
         int totalItemsRemoved= 0;
         foreach (ColorIndex colorKey in pendingDataDictionary.Keys)

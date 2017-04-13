@@ -1,26 +1,24 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class GameState
-{
-
-}
-
+public enum GameState { Running, Lose, Paused }
 public class GameController : MonoBehaviour {
-    public enum GameState {Running,Lose,Paused}
+
+    public static GameController instance;
+    #region PROPERTIES
     [Header("DEPENDECIES")]
-	public RingFactory RingFactoryComponent;
-	public ColorManager ColorManagerComponent;
+    public RingFactory RingFactoryComponent;
+    public ColorManager ColorManagerComponent;
     [Space(20)]
     [Header("GAME STATE")]
     public int setsRefreshed = 0;
-	public int setsToNextLevel = 5;
+    public int setsToNextLevel = 5;
     private int setsNextLevelIntial;
-	public int currentLevel = 1;
+    public int currentLevel = 1;
     private List<RingData> RingsInStagingArea = new List<RingData>();
     [Space(20)]
-    public GameState GAMESTATE;
+    [SerializeField]
+    private GameState gameState;
     [Space(20)]
     [Header("COUNTDOWN SETTINGS")]
     public float MaxCountdownTime = 30f;
@@ -31,7 +29,9 @@ public class GameController : MonoBehaviour {
 
     private ReferencePointBehaviour targetReferencePointToSpawnWhenStagingSetUpdate;
     private RingData ringDataToSpawnWhenStagingSetUpdate;
+    #endregion
 
+    #region ACCESSORS
     public float RemainingCountdownTime
     {
         get
@@ -89,11 +89,37 @@ public class GameController : MonoBehaviour {
         }
     }
 
+    public GameState GAMESTATE
+    {
+        get
+        {
+            return gameState;
+        }
+
+        set
+        {
+            gameState = value;
+            if (gameState == GameState.Lose)
+            {
+                if (LoseEvent != null)
+                {
+                    LoseEvent();
+                }
+            }
+            if (GameStateChange != null)
+            {
+                GameStateChange(gameState);
+            }
+        }
+    } 
+    #endregion
+
     #region Events
     public delegate void OnLerpChange(float lerpVal);
     public delegate void OnEvent();
     public delegate void OnReferencePoint(ReferencePointBehaviour point);
     public delegate void OnRingData(RingData data);
+    public delegate void OnGameState(GameState state);
     public static event OnEvent LoseEvent;
     public static event OnEvent CountDownOverEvent;
     public static event OnEvent AnomalyEventSuccess;
@@ -101,8 +127,13 @@ public class GameController : MonoBehaviour {
     public static event OnLerpChange CountdownLerpEvent;
     public static event OnReferencePoint TargetReferencePointToSpawnWhenStagingSetUpdateChange;
     public static event OnRingData RingDataToSpawnWhenStagingSetUpdateChange;
+    public static event OnGameState GameStateChange;
     #endregion
 
+    private void Awake()
+    {
+        instance = this;
+    }
     void Start () {
         
         // Register to events
@@ -227,11 +258,7 @@ public class GameController : MonoBehaviour {
         }
         else
         {
-            if (GAMESTATE != GameState.Lose)
-            {
-                Debug.LogWarning("GAMEACTION: LOSE!");
-                GAMESTATE = GameState.Lose;
-            }
+            Lose();
         }
     } 
     #endregion
@@ -291,8 +318,15 @@ public class GameController : MonoBehaviour {
                 }
             }
         }
-        Debug.Log("YOU LOSE!");
-
+        Lose();
+    }
+    private void Lose()
+    {
+        if (GAMESTATE != GameState.Lose)
+        {
+            Debug.LogWarning("GAMEACTION: LOSE!");
+            GAMESTATE = GameState.Lose;
+        }
     }
     #region Countdown Implementation
     void DoCountdown()
@@ -325,6 +359,9 @@ public class GameController : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        DoCountdown();
+        if (GAMESTATE == GameState.Running)
+        {
+            DoCountdown();
+        }
 	}
 }
