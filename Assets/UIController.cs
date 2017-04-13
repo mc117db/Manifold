@@ -27,6 +27,15 @@ public class UIController : MonoBehaviour {
                 break;
         }
     }
+    public void TurnOffAnimator()
+    {
+        CanvasController.enabled = false;
+    }
+    public void Restart()
+    {
+        CanvasController.enabled = true;
+        CanvasController.SetTrigger("Restart");
+    }
     void Lose()
     {
         CanvasController.enabled = true;

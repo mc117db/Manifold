@@ -150,16 +150,17 @@ public class GameController : MonoBehaviour {
         Restart();
 
 	}
-    void Restart ()
+    public void Restart ()
     {
-        RemainingCountdownTime = MaxCountdownTime;
-        setsNextLevelIntial = setsToNextLevel;
-        RingFactoryComponent.CreateNewSet();
-        RemoveAllRings();
-        GAMESTATE = GameState.Running;
+            RemainingCountdownTime = MaxCountdownTime;
+            setsNextLevelIntial = setsToNextLevel;
+            RingFactoryComponent.CreateNewSet();
+            RemoveAllRings();
+            GAMESTATE = GameState.Running;
     }
     public void onStagingSetUpdate(List<RingData> listOfRingsInStagingSet)
     {
+        RingsInStagingArea.Clear();
         RingsInStagingArea = listOfRingsInStagingSet;
     }
     public void onAnomalyEvent()
@@ -268,7 +269,10 @@ public class GameController : MonoBehaviour {
         Debug.Log("GAME ACTION: Force play rings in staging area"+" TOTAL: "+RingsInStagingArea.Count);
         for (int i = 0; i < RingsInStagingArea.Count; i++)
         {
-            SpawnRingDataAtRandomPoint(RingsInStagingArea[i]);
+            if (GAMESTATE == GameState.Running)
+            {
+                SpawnRingDataAtRandomPoint(RingsInStagingArea[i]);
+            }
         }
         RingFactoryComponent.CreateNewSet();
     }
