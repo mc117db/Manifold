@@ -167,6 +167,19 @@ public class GameController : MonoBehaviour {
             }
             GAMESTATE = GameState.Running;
     }
+    public void TogglePause ()
+    {
+        if (GAMESTATE != GameState.Paused)
+        {
+            GAMESTATE = GameState.Paused;
+            Debug.Log("GAMEACTION: PAUSE");
+        }
+        else
+        {
+            GAMESTATE = GameState.Running;
+            Debug.Log("GAMEACTION: RESUME");
+        }
+    } 
     public void onStagingSetUpdate(List<RingData> listOfRingsInStagingSet)
     {
         RingsInStagingArea.Clear();

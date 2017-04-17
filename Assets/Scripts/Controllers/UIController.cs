@@ -5,6 +5,7 @@ using UnityEngine;
 public class UIController : MonoBehaviour {
 
     public Animator CanvasController;
+    private GameState prevState;
 	// Use this for initialization
 	void Start () {
         GameController.GameStateChange += ListenToGameStateChange;
@@ -18,6 +19,10 @@ public class UIController : MonoBehaviour {
         {
             case GameState.Running:
                 CanvasController.enabled = false;
+                if (prevState == GameState.Paused)
+                {
+                    Resume();
+                }
                 break;
             case GameState.Lose:
                 Lose();
@@ -26,6 +31,7 @@ public class UIController : MonoBehaviour {
                 Pause();
                 break;
         }
+        prevState = state;
     }
     public void TurnOffAnimator()
     {
@@ -43,6 +49,12 @@ public class UIController : MonoBehaviour {
     }
     void Pause()
     {
-
+        CanvasController.enabled = true;
+        CanvasController.SetTrigger("Pause");
+    }
+    void Resume()
+    {
+        CanvasController.enabled = true;
+        CanvasController.SetTrigger("Resume");
     }
 }
