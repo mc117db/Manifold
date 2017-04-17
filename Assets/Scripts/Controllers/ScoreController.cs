@@ -39,7 +39,8 @@ public class ScoreImplementationData
 public class ScoreController : MonoBehaviour {
 
 	private int currentScore = 0;
-	public int CurrentScore{
+    private int currentComboNumber = 0;
+    public int CurrentScore{
 		get {
 			return currentScore;
 		}
@@ -53,11 +54,20 @@ public class ScoreController : MonoBehaviour {
 			{
 				ScoreUpdateEvent();
 			}
-		}
+            if (PlayerPrefs.HasKey("Local_HighScore") && !highScoreBeatCurrentRun)
+            {
+                if (currentScore > PlayerPrefs.GetInt("Local_HighScore"))
+                {
+                    highScoreBeatCurrentRun = true;
+                    if (HighScoreBeatDuringCurrentRun != null)
+                    {
+                        HighScoreBeatDuringCurrentRun();
+                    }
+                }
+            }
+        }
 	}
-	public bool matchLastTurn;
-	private int currentComboNumber = 0;
-	public int CurrentComboNumber{
+    public int CurrentComboNumber{
 		get {
 			return currentComboNumber;
 		}
@@ -76,18 +86,26 @@ public class ScoreController : MonoBehaviour {
             }
 		}
 	}
-	private ScoreImplementationData currentScoreImplementation = new ScoreImplementationData(5,1.5f,1.5f);
+
+    public bool matchLastTurn;
+    public bool highScoreBeatCurrentRun;
+
+    private ScoreImplementationData currentScoreImplementation = new ScoreImplementationData(5,1.5f,1.5f);
 	public static ScoreController instance;
 
-	public delegate void OnUpdateEvent ();
+    #region Events
+    public delegate void OnUpdateEvent();
     public delegate void OnUpdateEventReturnInt(int valueToReturn);
 
     public static event OnUpdateEventReturnInt ScoreValueUpdateEvent;
-	public static event OnUpdateEvent ScoreUpdateEvent; 
-	public static event OnUpdateEventReturnInt ComboUpdateEvent;
+    public static event OnUpdateEvent ScoreUpdateEvent;
+    public static event OnUpdateEventReturnInt ComboUpdateEvent;
     public static event OnUpdateEvent ComboIncreaseEvent;
-	// Use this for initialization
-	void Awake()
+    public static event OnUpdateEvent HighScoreUpdateEvent;
+    public static event OnUpdateEvent HighScoreBeatDuringCurrentRun;
+    #endregion
+    // Use this for initialization
+    void Awake()
 	{
 		instance = this;
 	}
@@ -98,6 +116,7 @@ public class ScoreController : MonoBehaviour {
 			Destroy(this);
 		}
 		MatchController.OnMatchEventTotalItemsRemoved += RingsConsumed;
+        GameController.LoseEvent += StoreHighScore;
 	}
 	void RingsConsumed(int totalRingsConsumed)
 	{
@@ -115,20 +134,53 @@ public class ScoreController : MonoBehaviour {
 			Debug.Log("SCORE CONTROLLER DOESN'T HAVE A ScoreImplementationData ASSIGNED!");
 		}	
 	}
+    void StoreHighScore()
+    {
+        if (PlayerPrefs.HasKey("Local_HighScore"))
+        {
+            if (currentScore > PlayerPrefs.GetInt("Local_HighScore"))
+            {
+                PlayerPrefs.SetInt("Local_HighScore", currentScore);
+                if (HighScoreUpdateEvent != null)
+                {
+                    HighScoreUpdateEvent();
+                }
+            }
+        }
+        else
+        {
+            PlayerPrefs.SetInt("Local_HighScore", currentScore);
+            if (HighScoreUpdateEvent != null)
+            {
+                HighScoreUpdateEvent();
+            }
+        }
+    }
+    void ClearHighScore()
+    {
+        Debug.LogWarning("DEVACTION: CLEARING HIGHSCORE");
+        PlayerPrefs.DeleteKey("Local_HighScore");
+    }
 	public void ResetCombo()
 	{
 		//Debug.Log("RESET COMBO");
 		matchLastTurn = false;
 		CurrentComboNumber = 0;
 	}
-
-	void Reset()
+	public void Reset()
 	{
 		Debug.Log("RESETTING SCORE CONTROLLER");
 		CurrentScore = 0;
 		CurrentComboNumber = 0;
 		matchLastTurn = false;
+        highScoreBeatCurrentRun = false;
 	}
+    public void Continue()
+    {
+        CurrentComboNumber = 0;
+        matchLastTurn = false;
+        highScoreBeatCurrentRun = false;
+    }
 	// Update is called once per frame
 
 }

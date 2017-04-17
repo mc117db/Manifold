@@ -29,6 +29,7 @@ public sealed class MatchController : MonoBehaviour {
         {
             Debug.LogWarning("DEV: MATCHCONTROLLER IS PREVENTING MATCHES");
         }
+        GameController.StartEvent += delegate { pendingDataDictionary.Clear(); };
 	}
     public void StoreMatch (MatchData matchData)
     {

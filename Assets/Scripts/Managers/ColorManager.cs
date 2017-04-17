@@ -44,7 +44,6 @@ public class ColorManager : MonoBehaviour {
     void Awake ()
     {
         instance = this;
-        UpdateLevel();
     }
     public Color FetchColorInformation (ColorIndex index)
     {
@@ -65,9 +64,9 @@ public class ColorManager : MonoBehaviour {
             Debug.Log("Game tried to advance but max level reached already");
             return;
         }
-        Debug.Log("Updating Intial colors");
+        Debug.Log("Updating colors to level "+CurrentLevel);
         activeColors.Clear();
-        Debug.Log("NO OF REGISTERED LEVELS: " + registeredLevelColors.Count);
+        //Debug.Log("NO OF REGISTERED LEVELS: " + registeredLevelColors.Count);
         for (int i = 0; i < CurrentLevel; i++)
         {
             foreach (ColorIndex colr in registeredLevelColors[i].colorsInLevel)

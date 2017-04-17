@@ -9,6 +9,7 @@ public class GameController : MonoBehaviour {
     [Header("DEPENDECIES")]
     public RingFactory RingFactoryComponent;
     public ColorManager ColorManagerComponent;
+    public ScoreController ScoreControllerComponent;
     [Space(20)]
     [Header("GAME STATE")]
     public int setsRefreshed = 0;
@@ -120,6 +121,7 @@ public class GameController : MonoBehaviour {
     public delegate void OnReferencePoint(ReferencePointBehaviour point);
     public delegate void OnRingData(RingData data);
     public delegate void OnGameState(GameState state);
+    public static event OnEvent StartEvent;
     public static event OnEvent LoseEvent;
     public static event OnEvent CountDownOverEvent;
     public static event OnEvent AnomalyEventSuccess;
@@ -147,15 +149,22 @@ public class GameController : MonoBehaviour {
         ScoreController.ComboIncreaseEvent += OnComboAddTime;
 
         CountDownOverEvent += ForcePlayStagingSet; // Internal method
+        setsNextLevelIntial = setsToNextLevel;
         Restart();
 
 	}
     public void Restart ()
     {
             RemainingCountdownTime = MaxCountdownTime;
-            setsNextLevelIntial = setsToNextLevel;
+            setsToNextLevel = setsNextLevelIntial;
+            ColorManagerComponent.CurrentLevel = 1;
             RingFactoryComponent.CreateNewSet();
+            ScoreControllerComponent.Reset();
             RemoveAllRings();
+            if (StartEvent != null)
+            {
+            StartEvent();
+            }
             GAMESTATE = GameState.Running;
     }
     public void onStagingSetUpdate(List<RingData> listOfRingsInStagingSet)

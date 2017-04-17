@@ -7,18 +7,31 @@ using DG.Tweening;
 public class ScoreTextUpdater : MonoBehaviour {
 
     public Text textComponent;
+    public Color highScoreReachedColor = Color.red;
+    private Color initColor;
     private Vector3 initPos;
     private Vector3 initScale;
 	// Use this for initialization
 	void Start () {
         ScoreController.ScoreValueUpdateEvent += UpdateText;
+        ScoreController.HighScoreBeatDuringCurrentRun += HighScoreReachedDuringRunEvent;
+        ScoreController.ScoreValueUpdateEvent += ScoreController_ScoreValueUpdateEvent;
         SFX_PointParticleBehaviour.OnFinishLerpEvent += PunchText;
+        initColor = textComponent.color;
         initPos = transform.position;
         initScale = transform.localScale;
 	}
-	
-	// Update is called once per frame
-	void UpdateText (int valueToPush) {
+
+    private void ScoreController_ScoreValueUpdateEvent(int valueToReturn)
+    {
+        if (valueToReturn == 0)
+        {
+            textComponent.color = initColor;
+        }
+    }
+
+    // Update is called once per frame
+    void UpdateText (int valueToPush) {
         textComponent.text = valueToPush.ToString();
         ShakeText();
     }
@@ -32,5 +45,9 @@ public class ScoreTextUpdater : MonoBehaviour {
     void ShakeText()
     {
         DOTween.Shake(() => transform.position, x => transform.position = x, 0.1f, 10, 10, 25, false).OnComplete(delegate { transform.position = initPos; });
+    }
+    void HighScoreReachedDuringRunEvent()
+    {
+        textComponent.color = highScoreReachedColor;
     }
 }
