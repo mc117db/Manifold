@@ -107,8 +107,11 @@ public class RingPointManager : MonoBehaviour, IDropHandler {
     }
     void AcceptDragRing()
     {
-        Ring = RingDragBehaviour.DraggedInstance.GetComponent<RingBehaviour>();
-        IntializeRing();
+        if (RingDragBehaviour.DraggedInstance.GetComponent<RingBehaviour>() != null)
+        {
+            Ring = RingDragBehaviour.DraggedInstance.GetComponent<RingBehaviour>();
+            IntializeRing();
+        }
     }
     public void AcceptSpawnedRing(RingBehaviour ringToAccept)
     {
