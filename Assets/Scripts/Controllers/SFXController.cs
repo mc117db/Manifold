@@ -17,6 +17,8 @@ public class SFXController : MonoBehaviour {
     [Header("Point SFX Settings")]
     public Vector3 scoreTextPos;
     public float intVel, spd, deltaMin, deltaMax;
+    [Space(10)]
+    public GameObject gridEntrySFX;
 
     // Use this for initialization
     void Start () {
@@ -122,6 +124,15 @@ public class SFXController : MonoBehaviour {
                 return bluePoint;
             default:
                 return prefabToSpawnPoint_FALLBACK;
+        }
+    }
+
+    public void SpawnGridEntry (Vector3 pos)
+    {
+        if (gridEntrySFX)
+        {
+            GameObject gridEntrySFXGO = Instantiate(gridEntrySFX, pos, Quaternion.identity);
+            gridEntrySFXGO.AddComponent<SFX_DestroyAfterSeconds>();
         }
     }
 }
