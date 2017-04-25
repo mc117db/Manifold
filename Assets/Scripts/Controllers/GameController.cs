@@ -150,10 +150,10 @@ public class GameController : MonoBehaviour {
 
         CountDownOverEvent += ForcePlayStagingSet; // Internal method
         setsNextLevelIntial = setsToNextLevel;
-        Restart();
+        StartGame();
 
 	}
-    public void Restart ()
+    public void StartGame ()
     {
             RemainingCountdownTime = MaxCountdownTime;
             setsToNextLevel = setsNextLevelIntial;
