@@ -78,7 +78,7 @@ public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPoin
             return false;
         }
     }
-	public void CheckNeighboursForColor(List<ColorIndex> colorcheck)
+	public void CheckNeighboursForColor(List<ColorIndex> colorcheck,bool isDragDrop)
     {
         //Debug.Log("CHECKING FOR: "+colorcheck[0].ToString()+" "+colorcheck[1].ToString()+" "+colorcheck[2].ToString());
         int neighbourHasColor = 0;
@@ -152,7 +152,10 @@ public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPoin
         if (!MatchFound)
         {
             // NO MATCH FOUND, RESET THE COMBO :<
-            ScoreController.instance.ResetCombo();
+            if (isDragDrop)
+            {
+                ScoreController.instance.ResetCombo();
+            }
         }
         else
         {

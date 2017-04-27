@@ -10,7 +10,7 @@ public class AudioManager : MonoBehaviour {
     // Use this for initialization
     void Start () {
         GameController.StartEvent += delegate { PlayMusic(0); };
-        RingPointManager.RingDropEvent += delegate { PlaySound(0); };
+        ScoreController.ComboResetEvent += delegate { PlaySound(0); };
         MatchController.OnMatchEventHappen += delegate { PlaySound(1); };
         RingFactory.onRefreshSetEvent += delegate { PlaySound(2); };
         GameController.CountDownOverEvent += delegate { PlaySound(3);  };

@@ -103,6 +103,7 @@ public class ScoreController : MonoBehaviour {
     public static event OnUpdateEvent ComboIncreaseEvent;
     public static event OnUpdateEvent HighScoreUpdateEvent;
     public static event OnUpdateEvent HighScoreBeatDuringCurrentRun;
+    public static event OnUpdateEvent ComboResetEvent;
     #endregion
     // Use this for initialization
     void Awake()
@@ -118,7 +119,7 @@ public class ScoreController : MonoBehaviour {
 		MatchController.OnMatchEventTotalItemsRemoved += RingsConsumed;
         GameController.LoseEvent += StoreHighScore;
 	}
-	void RingsConsumed(int totalRingsConsumed)
+	public void RingsConsumed(int totalRingsConsumed)
 	{
 		if (currentScoreImplementation != null)
 		{
@@ -164,6 +165,11 @@ public class ScoreController : MonoBehaviour {
 	public void ResetCombo()
 	{
 		//Debug.Log("RESET COMBO");
+        // REFERENCEPOINTBEHAVIOUR IS RESETTING THE COMBO (LINE:157)
+        if (ComboResetEvent != null)
+        {
+            ComboResetEvent();
+        }
 		matchLastTurn = false;
 		CurrentComboNumber = 0;
 	}

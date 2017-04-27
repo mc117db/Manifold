@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using System.Linq;
 
 public class RingPointManager : MonoBehaviour, IDropHandler {
 
@@ -31,20 +32,23 @@ public class RingPointManager : MonoBehaviour, IDropHandler {
     }
     static float localRingSize = 1.5f;
     public delegate void onRingDrop();
+    public delegate void onDragDrop(bool isDragged);
     public static event onRingDrop RingDropEvent; // RingFactory depends on this
+    public static Action<ColorIndex> onTierMatchUp; // Learnt something new about Actions - https://unity3d.college/2016/10/05/unity-events-actions-delegates/
     public event onRingDrop stateChange; // This happens when something changes to current ring
+    public event onDragDrop stateChangeDragDrop;
     void Start()
     {
-        stateChange += CheckNeighboursForSimiliarColors;
+        stateChangeDragDrop += CheckNeighboursForSimiliarColors;
     } 
     // IDROPHANDLER IMPLEMENTATION
-    private void CheckNeighboursForSimiliarColors()
+    private void CheckNeighboursForSimiliarColors(bool isDragDrop)
     {
         if (!Ring)
         {
             return;
         }
-        GetComponent<ReferencePointBehaviour>().CheckNeighboursForColor(Ring.CurrentRingData.ringColors);
+        GetComponent<ReferencePointBehaviour>().CheckNeighboursForColor(Ring.CurrentRingData.ringColors,isDragDrop);
     }
     public bool CheckPointIfCanAccept(RingData other)
     {
@@ -76,7 +80,20 @@ public class RingPointManager : MonoBehaviour, IDropHandler {
                     //AcceptDragRing(); 
                     otherRing.GetComponent<RingDragBehaviour>().OnDragOverAndCombine();
                     RingDropEvent();
-                    stateChange();
+                    if (stateChange != null)
+                    {
+                        stateChange();
+                    }
+                    // Check if ring has 3 of the same colors using LINQ expression
+                    if (!(Ring.CurrentRingData.ringColors.Any(o => o != Ring.CurrentRingData.ringColors[0])) && Ring.CurrentRingData.ringColors[0] != ColorIndex.NONE)
+                    {
+                        onTierMatchUp(Ring.CurrentRingData.ringColors[0]);
+                    }
+                    else if (stateChangeDragDrop != null)
+                    {
+                        stateChangeDragDrop(true);
+                    }
+                  
                 }
                 else
                 {
@@ -110,16 +127,16 @@ public class RingPointManager : MonoBehaviour, IDropHandler {
         if (RingDragBehaviour.DraggedInstance.GetComponent<RingBehaviour>() != null)
         {
             Ring = RingDragBehaviour.DraggedInstance.GetComponent<RingBehaviour>();
-            IntializeRing();
+            IntializeRing(true);
         }
     }
     public void AcceptSpawnedRing(RingBehaviour ringToAccept)
     {
         Ring = ringToAccept;
-        IntializeRing();
+        IntializeRing(false);
         Ring.GetComponent<RingScaleAnimationController>().GrowIn();
     }
-    void IntializeRing()
+    void IntializeRing(bool isDragDrop)
     {
         Ring.gameObject.GetComponent<RingDragBehaviour>().CanDrag = false;
         Ring.transform.parent = transform;
@@ -129,6 +146,10 @@ public class RingPointManager : MonoBehaviour, IDropHandler {
         if (stateChange != null)
         {
             stateChange();
+        }
+        if (stateChangeDragDrop != null)
+        {
+            stateChangeDragDrop(isDragDrop);
         }
         if (RingDropEvent != null)
         {

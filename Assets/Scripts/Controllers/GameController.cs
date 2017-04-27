@@ -148,6 +148,8 @@ public class GameController : MonoBehaviour {
         MatchController.OnMatchEventHappen += OnMatchAddTime;
         ScoreController.ComboIncreaseEvent += OnComboAddTime;
 
+        RingPointManager.onTierMatchUp += RemoveAllTiersOfColor;
+
         CountDownOverEvent += ForcePlayStagingSet; // Internal method
         setsNextLevelIntial = setsToNextLevel;
         StartGame();
@@ -309,6 +311,30 @@ public class GameController : MonoBehaviour {
                 //Debug.Log("ADD NODE");
                 node.GetComponent<RingPointManager>().RemoveRing();
             }
+        }
+    }
+    public void RemoveAllTiersOfColor (ColorIndex colr)
+    {
+        
+        int noOfRingsOfColor = 0;
+        foreach (ReferencePointBehaviour node in TransformationGrid.NODES)
+        {
+            //Debug.Log("CHECK");
+            if (node.HaveRing())
+            {
+                RingPointManager pointManager = node.GetComponent<RingPointManager>();
+                //Debug.Log("ADD NODE");
+                if (pointManager.HaveColor(colr))
+                {
+                    noOfRingsOfColor += pointManager.Ring.ReturnNumberOfTiersOfColor(colr);
+                    pointManager.Ring.RemoveColor(colr);
+                }
+            }
+        }
+        if (noOfRingsOfColor > 0)
+        {
+            Debug.Log("GAMEACTION: Removing tiers of colorindex: " + colr.ToString() + " ( "+noOfRingsOfColor+" ringtiers removed this way!)");
+            ScoreController.instance.RingsConsumed(noOfRingsOfColor);
         }
     }
 	public void AdvanceGameState()

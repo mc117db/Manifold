@@ -206,6 +206,18 @@ public class RingBehaviour : MonoBehaviour {
         }
         CurrentRingData = newState;
     }
+    public int ReturnNumberOfTiersOfColor(ColorIndex index)
+    {
+        int noOfTiers = 0;
+        foreach (ColorIndex colr in CurrentRingData.ringColors)
+        {
+            if (colr == index)
+            {
+                noOfTiers++;
+            }
+        }
+        return noOfTiers;
+    }
 	// Use this for initialization
 	void Start () {
 		

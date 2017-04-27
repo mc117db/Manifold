@@ -56,7 +56,7 @@ public sealed class MatchController : MonoBehaviour {
             //Debug.Log("CLEARING COLORKEY: " + colorKey.ToString());
             for (int i = 0; i < pendingDataDictionary[colorKey].Count;i++)
             {
-                totalItemsRemoved++;
+                totalItemsRemoved += pendingDataDictionary[colorKey][i].ReturnNumberOfTiersOfColor(colorKey);
                 pendingDataDictionary[colorKey][i].RemoveColor(colorKey);
             }
             MatchData dataToBroadcast = new MatchData();
