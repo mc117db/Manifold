@@ -23,13 +23,26 @@ public class SFXController : MonoBehaviour {
     // Use this for initialization
     void Start () {
         MatchController.OnMatchEventData += ListenToMatches;
+        GameController.RemoveColorTiersLocationEvent += SpawnPointsFromColorRemoval;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		
 	}
+    void SpawnPointsFromColorRemoval(List<Vector3>positions,ColorIndex colr)
+    {
+        for (int i = 0; i < positions.Count;i++)
+        {
+            GameObject sfxRing = Instantiate(GetSFXRingFromColorCode(colr));
+            sfxRing.AddComponent<SFX_DestroyAfterSeconds>();
+            sfxRing.transform.position = positions[i];
 
+            GameObject pt = Instantiate(GetSFXPoint(colr));
+            pt.transform.position = positions[i];
+            pt.AddComponent<SFX_PointParticleBehaviour>().Initialize(intVel,spd,deltaMin,deltaMax,scoreTextPos);
+        }
+    }
     void ListenToMatches(MatchData data)
     {
         Vector3 totalPosValue = new Vector3(0,0,0);

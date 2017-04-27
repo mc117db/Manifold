@@ -95,7 +95,7 @@ public class RingDragBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandler,
         DraggedInstance = null;
         _offsetToMouse = Vector3.zero;
         //TODO Refactor for pooling later
-        Debug.Log("DESTROYING RING TO BE COMBINED");
+        //Debug.Log("DESTROYING RING TO BE COMBINED");
         transform.parent = null;
         Destroy(gameObject);
     }

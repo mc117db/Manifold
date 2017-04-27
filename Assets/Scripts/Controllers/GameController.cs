@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 public enum GameState { Running, Lose, Paused }
@@ -121,6 +122,7 @@ public class GameController : MonoBehaviour {
     public delegate void OnReferencePoint(ReferencePointBehaviour point);
     public delegate void OnRingData(RingData data);
     public delegate void OnGameState(GameState state);
+    public delegate void RemovalColorLocation(List<Vector3> positions,ColorIndex color);
     public static event OnEvent StartEvent;
     public static event OnEvent LoseEvent;
     public static event OnEvent CountDownOverEvent;
@@ -130,6 +132,7 @@ public class GameController : MonoBehaviour {
     public static event OnReferencePoint TargetReferencePointToSpawnWhenStagingSetUpdateChange;
     public static event OnRingData RingDataToSpawnWhenStagingSetUpdateChange;
     public static event OnGameState GameStateChange;
+    public static event RemovalColorLocation RemoveColorTiersLocationEvent;
     #endregion
 
     private void Awake()
@@ -203,7 +206,7 @@ public class GameController : MonoBehaviour {
             }
             if (availablePoints.Count > 0)
             {
-                TargetReferencePointToSpawnWhenStagingSetUpdate = availablePoints[Random.Range(0, availablePoints.Count - 1)];
+                TargetReferencePointToSpawnWhenStagingSetUpdate = availablePoints[UnityEngine.Random.Range(0, availablePoints.Count - 1)];
             }
             else
             {
@@ -252,7 +255,7 @@ public class GameController : MonoBehaviour {
             if (RingFactoryComponent != null)
             {
                 //Debug.Log("Available Points: "+availablePoints.Count);
-                RingFactoryComponent.SpawnRandomRingAtPoint(availablePoints[Random.Range(0, availablePoints.Count - 1)]);
+                RingFactoryComponent.SpawnRandomRingAtPoint(availablePoints[UnityEngine.Random.Range(0, availablePoints.Count - 1)]);
             }
         }
         else
@@ -278,7 +281,7 @@ public class GameController : MonoBehaviour {
             if (RingFactoryComponent != null)
             {
                 //Debug.Log("Available Points: "+availablePoints.Count);
-                RingFactoryComponent.SpawnRingDataAtPoint(ringData, availablePoints[Random.Range(0, availablePoints.Count - 1)]);
+                RingFactoryComponent.SpawnRingDataAtPoint(ringData, availablePoints[UnityEngine.Random.Range(0, availablePoints.Count - 1)]);
             }
         }
         else
@@ -317,6 +320,7 @@ public class GameController : MonoBehaviour {
     {
         
         int noOfRingsOfColor = 0;
+        List<Vector3> locationOfNodes = new List<Vector3>();
         foreach (ReferencePointBehaviour node in TransformationGrid.NODES)
         {
             //Debug.Log("CHECK");
@@ -328,6 +332,7 @@ public class GameController : MonoBehaviour {
                 {
                     noOfRingsOfColor += pointManager.Ring.ReturnNumberOfTiersOfColor(colr);
                     pointManager.Ring.RemoveColor(colr);
+                    locationOfNodes.Add(pointManager.gameObject.transform.position);
                 }
             }
         }
@@ -335,6 +340,10 @@ public class GameController : MonoBehaviour {
         {
             Debug.Log("GAMEACTION: Removing tiers of colorindex: " + colr.ToString() + " ( "+noOfRingsOfColor+" ringtiers removed this way!)");
             ScoreController.instance.RingsConsumed(noOfRingsOfColor);
+            if (RemoveColorTiersLocationEvent != null)
+            {
+                RemoveColorTiersLocationEvent(locationOfNodes,colr);
+            }
         }
     }
 	public void AdvanceGameState()
