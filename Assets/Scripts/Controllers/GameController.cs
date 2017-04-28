@@ -133,8 +133,23 @@ public class GameController : MonoBehaviour {
     public static event OnRingData RingDataToSpawnWhenStagingSetUpdateChange;
     public static event OnGameState GameStateChange;
     public static event RemovalColorLocation RemoveColorTiersLocationEvent;
+    public static event OnEvent RemoveColorTiersEvent;
     #endregion
 
+    private void OnDestroy()
+    {
+        StartEvent = null;
+        LoseEvent = null;
+        CountDownOverEvent = null;
+        AnomalyEventSuccess = null;
+        AnomalyEventFail = null;
+        CountdownLerpEvent = null;
+        TargetReferencePointToSpawnWhenStagingSetUpdateChange = null;
+        RingDataToSpawnWhenStagingSetUpdateChange = null;
+        GameStateChange = null;
+        RemoveColorTiersLocationEvent = null;
+        RemoveColorTiersEvent = null;
+    }
     private void Awake()
     {
         instance = this;
@@ -343,6 +358,10 @@ public class GameController : MonoBehaviour {
             if (RemoveColorTiersLocationEvent != null)
             {
                 RemoveColorTiersLocationEvent(locationOfNodes,colr);
+            }
+            if (RemoveColorTiersEvent != null)
+            {
+                RemoveColorTiersEvent();
             }
         }
     }

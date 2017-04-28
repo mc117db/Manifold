@@ -19,17 +19,21 @@ public class AnomalyIndicatorController : MonoBehaviour {
     public Color anomalyFufilledStateColor;
     public Color anomalyFufilledStateColorTEXT;
     private Vector3 initScale;
-	
-	// Use this for initialization
+
+    // Use this for initialization
+    private void Awake()
+    {
+        if (textMeshComponent == null)
+        {
+            textMeshComponent = GetComponent<TextMesh>();
+        }
+    }
 	void Start () {
         GameController.TargetReferencePointToSpawnWhenStagingSetUpdateChange += ChangeTargetPoint;
         GameController.RingDataToSpawnWhenStagingSetUpdateChange += ChangeIndicatorColors;
         GameController.LoseEvent += delegate { active = false; };
         initScale = transform.localScale;
-        if (textMeshComponent == null)
-        {
-            textMeshComponent = GetComponent<TextMesh>();
-        }
+        
 	}
 	
     void ChangeTargetPoint(ReferencePointBehaviour point)

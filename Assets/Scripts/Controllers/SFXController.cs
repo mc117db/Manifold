@@ -13,6 +13,7 @@ public class SFXController : MonoBehaviour {
     public GameObject blueSFXRing, greenSFXRing, purpleSFXRing, redSFXRing, yellowSFXRing;
     public GameObject blueAxisBlast, greenAxisBlast, purpleAxisBlast, redAxisBlast, yellowAxisBlast;
     public GameObject bluePoint, greenPoint, purplePoint, redPoint, yellowPoint;
+    public GameObject blueStackBlast, greenStackBlast, purpleStackBlast, redStackBlast, yellowStackBlast;
     [Space(10)]
     [Header("Point SFX Settings")]
     public Vector3 scoreTextPos;
@@ -32,6 +33,7 @@ public class SFXController : MonoBehaviour {
 	}
     void SpawnPointsFromColorRemoval(List<Vector3>positions,ColorIndex colr)
     {
+        SpawnStackBlast(colr);
         for (int i = 0; i < positions.Count;i++)
         {
             GameObject sfxRing = Instantiate(GetSFXRingFromColorCode(colr));
@@ -139,6 +141,30 @@ public class SFXController : MonoBehaviour {
                 return prefabToSpawnPoint_FALLBACK;
         }
     }
+    GameObject GetStackBlastFromColorCode(ColorIndex index)
+    {
+        switch (index)
+        {
+            case ColorIndex.Alpha:
+                return redStackBlast;
+            case ColorIndex.Bravo:
+                return blueStackBlast;
+            case ColorIndex.Charlie:
+                return greenStackBlast;
+            case ColorIndex.Delta:
+                return purpleStackBlast;
+            case ColorIndex.Echo:
+                return yellowStackBlast;
+            case ColorIndex.Fanta:
+                return purpleStackBlast;
+            case ColorIndex.Gamma:
+                return purpleStackBlast;
+            case ColorIndex.Hotel:
+                return blueStackBlast;
+            default:
+                return blueStackBlast;
+        }
+    }
 
     public void SpawnGridEntry (Vector3 pos)
     {
@@ -147,5 +173,11 @@ public class SFXController : MonoBehaviour {
             GameObject gridEntrySFXGO = Instantiate(gridEntrySFX, pos, Quaternion.identity);
             gridEntrySFXGO.AddComponent<SFX_DestroyAfterSeconds>();
         }
+    }
+    public void SpawnStackBlast(ColorIndex index)
+    {
+        GameObject stackBlast = Instantiate(GetStackBlastFromColorCode(index));
+        stackBlast.transform.position = Vector3.zero+new Vector3(0,0,-3);
+        stackBlast.AddComponent<SFX_DestroyAfterSeconds>();
     }
 }

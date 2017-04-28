@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class SFX_PointParticleBehaviour : MonoBehaviour {
 
     Vector3 velocity;
@@ -14,6 +14,16 @@ public class SFX_PointParticleBehaviour : MonoBehaviour {
     public delegate void OnEvent();
     public static event OnEvent OnFinishLerpEvent;
     public event OnEvent OnFinishLerpEventSelf;
+    public void Start()
+    {
+        SceneManager.sceneUnloaded += SceneManager_sceneUnloaded;
+    }
+
+    private void SceneManager_sceneUnloaded(Scene arg0)
+    {
+        OnFinishLerpEvent = null;
+        OnFinishLerpEventSelf = null;
+    }
 
     public void Initialize (float intVel,float spd,float deltaMin,float deltaMax,Vector3 endPt)
     {

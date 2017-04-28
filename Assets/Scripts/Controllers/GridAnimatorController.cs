@@ -18,13 +18,19 @@ public class GridAnimatorController : MonoBehaviour {
 	}
     void Entry()
     {
-        animatorController.enabled = true;
-        animatorController.SetTrigger("Entry");
+        if (animatorController)
+        {
+            animatorController.enabled = true;
+            animatorController.SetTrigger("Entry");
+        }
     }
     void Exit()
     {
-        animatorController.enabled = true;
-        animatorController.SetTrigger("Exit1");
+        if (animatorController)
+        {
+            animatorController.enabled = true;
+            animatorController.SetTrigger("Exit1");
+        }
     }
     public void EntryExplodeSFX()
     {

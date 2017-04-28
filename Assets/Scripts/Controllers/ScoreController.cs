@@ -106,6 +106,16 @@ public class ScoreController : MonoBehaviour {
     public static event OnUpdateEvent ComboResetEvent;
     #endregion
     // Use this for initialization
+    private void OnDestroy()
+    {
+        ScoreValueUpdateEvent = null;
+        ScoreUpdateEvent = null;
+        ComboUpdateEvent = null;
+        ComboIncreaseEvent = null;
+        HighScoreUpdateEvent = null;
+        HighScoreBeatDuringCurrentRun = null;
+        ComboResetEvent = null;
+    }
     void Awake()
 	{
 		instance = this;

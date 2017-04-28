@@ -10,6 +10,7 @@ public class ScaleTransform : Transformation
     //TODO shakeOnStagingAreaEvent might need to be shifted to a settings manager in the future.
     public bool shakeOnStagingAreaEvent = true;
     public bool shakeOnCountdownOverEvent = true;
+    public bool shakeOnStack = true;
     public void Start()
     {
         if (shakeOnStagingAreaEvent)
@@ -19,6 +20,10 @@ public class ScaleTransform : Transformation
         if (shakeOnCountdownOverEvent)
         {
             GameController.CountDownOverEvent += Shake;
+        }
+        if (shakeOnStack)
+        {
+            GameController.RemoveColorTiersEvent += Shake;
         }
     }
     public float Size
@@ -36,7 +41,7 @@ public class ScaleTransform : Transformation
     }
     public void Shake ()
     {
-        transform.DOShakeScale(0.5f, new Vector3(0.2f, 0.2f, 0), 20, 30f);
+        transform.DOShakeScale(0.5f, new Vector3(0.2f, 0.2f, 0), 20, 30f).OnComplete(delegate { transform.localScale = Vector3.one; } );
     }
     public override Vector3 Apply(Vector3 point)
     {

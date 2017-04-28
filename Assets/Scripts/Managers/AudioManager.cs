@@ -14,6 +14,7 @@ public class AudioManager : MonoBehaviour {
         MatchController.OnMatchEventHappen += delegate { PlaySound(1); };
         RingFactory.onRefreshSetEvent += delegate { PlaySound(2); };
         GameController.CountDownOverEvent += delegate { PlaySound(3);  };
+        GameController.RemoveColorTiersEvent += delegate { PlaySound(4); };
     }
 	
 	// Update is called once per frame

@@ -14,6 +14,12 @@ public sealed class MatchController : MonoBehaviour {
     public static event OnMatch OnMatchEventTotalItemsRemoved;
     public static event OnMatchData OnMatchEventData;
 
+    private void OnDestroy()
+    {
+        OnMatchEventHappen = null;
+        OnMatchEventTotalItemsRemoved = null;
+        OnMatchEventData = null;
+    }
     private Dictionary<ColorIndex,List<RingBehaviour>> pendingDataDictionary = new Dictionary<ColorIndex,List<RingBehaviour>>();
     //private List<MatchData> pendingMatchData = new List<MatchData>();
     public void Awake()

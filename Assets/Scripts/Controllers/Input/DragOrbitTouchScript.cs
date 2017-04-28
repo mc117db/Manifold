@@ -22,8 +22,14 @@ public class DragOrbitTouchScript : MonoBehaviour {
 	public static event OnDeltaChange deltaRatioChange;
 	public static event OnDeltaChange mouseMovementDeltaChange;
 
-	// Use this for initialization
-	void Start () 
+    private void OnDestroy()
+    {
+        deltaChange = null;
+        deltaRatioChange = null;
+        mouseMovementDeltaChange = null;
+    }
+    // Use this for initialization
+    void Start () 
 	{
 		
 	}

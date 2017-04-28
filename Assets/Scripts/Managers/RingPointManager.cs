@@ -37,6 +37,10 @@ public class RingPointManager : MonoBehaviour, IDropHandler {
     public static Action<ColorIndex> onTierMatchUp; // Learnt something new about Actions - https://unity3d.college/2016/10/05/unity-events-actions-delegates/
     public event onRingDrop stateChange; // This happens when something changes to current ring
     public event onDragDrop stateChangeDragDrop;
+    private void OnDestroy()
+    {
+        RingDropEvent = null;
+    }
     void Start()
     {
         stateChangeDragDrop += CheckNeighboursForSimiliarColors;
