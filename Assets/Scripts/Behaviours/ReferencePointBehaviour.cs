@@ -18,6 +18,7 @@ public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPoin
         originalColor = GetComponent<SpriteRenderer>().color;
         neighbours = new List<ReferencePointBehaviour>();
         FindNeighbours();
+        RingDragBehaviour.FailDragEventGlobal += delegate { ToggleColor(false); }; // HACK: Incredibly hacky! resolve this by implementing better behaviours
     }
 	private void AddNeighbour( ReferencePointBehaviour neighbour)
 	{

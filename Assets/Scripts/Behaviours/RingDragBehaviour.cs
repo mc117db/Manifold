@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class RingDragBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
@@ -14,7 +15,9 @@ public class RingDragBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandler,
     private bool canDrag;
     public delegate void failDrag();
     public event failDrag failDragEvent;
+    public static event failDrag FailDragEventGlobal;
 
+       
     public bool CanDrag
     {
         get
@@ -36,7 +39,9 @@ public class RingDragBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandler,
     void Start()
     {
         CanDrag = true;
+        SceneManager.sceneUnloaded += delegate { FailDragEventGlobal = null; }; // Deregisters everything when scene unloads (important because its static and doesnt belong to any instance)
     }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (!CanDrag || GameController.instance.GAMESTATE != GameState.Running)
@@ -83,6 +88,10 @@ public class RingDragBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandler,
             if (failDragEvent != null)
             {
                 failDragEvent();
+            }
+            if (FailDragEventGlobal != null)
+            {
+                FailDragEventGlobal();
             }
             transform.position = _startPosition;
             DraggedInstance = null;
