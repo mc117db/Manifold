@@ -155,6 +155,7 @@ public class ReferencePointBehaviour : MonoBehaviour, IPointerEnterHandler,IPoin
             // NO MATCH FOUND, RESET THE COMBO :<
             if (isDragDrop)
             {
+                GameController.instance.onNoMatchEvent();
                 ScoreController.instance.ResetCombo();
             }
         }

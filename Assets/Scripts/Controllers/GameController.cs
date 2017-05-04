@@ -134,6 +134,7 @@ public class GameController : MonoBehaviour {
     public static event OnGameState GameStateChange;
     public static event RemovalColorLocation RemoveColorTiersLocationEvent;
     public static event OnEvent RemoveColorTiersEvent;
+    public static event OnEvent NoMatchEvent;
     #endregion
 
     private void OnDestroy()
@@ -149,6 +150,7 @@ public class GameController : MonoBehaviour {
         GameStateChange = null;
         RemoveColorTiersLocationEvent = null;
         RemoveColorTiersEvent = null;
+        NoMatchEvent = null;
     }
     private void Awake()
     {
@@ -199,7 +201,16 @@ public class GameController : MonoBehaviour {
             GAMESTATE = GameState.Running;
             Debug.Log("GAMEACTION: RESUME");
         }
-    } 
+    }
+    public void onNoMatchEvent()
+    {
+        //ReferencePointBehaviour is calling this function at Line:157
+        if (NoMatchEvent != null)
+        {
+            NoMatchEvent();
+        }
+
+    }
     public void onStagingSetUpdate(List<RingData> listOfRingsInStagingSet)
     {
         RingsInStagingArea.Clear();
@@ -229,6 +240,7 @@ public class GameController : MonoBehaviour {
                 return;
             }
             RingDataToSpawnWhenStagingSetUpdate = RingFactoryComponent.GenerateNewRingData();
+            RingDataToSpawnWhenStagingSetUpdate.spawnType = SpawnType.Anomaly; // Add a modifier to the ringdata class so matchcontroller will catch it.
         }
         else
         {
@@ -313,6 +325,7 @@ public class GameController : MonoBehaviour {
         {
             if (GAMESTATE == GameState.Running)
             {
+                RingsInStagingArea[i].spawnType = SpawnType.ForceDrop;
                 SpawnRingDataAtRandomPoint(RingsInStagingArea[i]);
             }
         }

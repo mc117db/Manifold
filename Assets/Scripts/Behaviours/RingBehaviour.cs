@@ -218,9 +218,16 @@ public class RingBehaviour : MonoBehaviour {
         }
         return noOfTiers;
     }
+    void ClearSpawnModifiers (){
+        if (currentRingData.spawnType != SpawnType.Normal)
+        {
+            currentRingData.spawnType = SpawnType.Normal;
+        }
+    }
 	// Use this for initialization
 	void Start () {
-		
+        MatchController.PendingMatchClearedEvent += ClearSpawnModifiers;
+        GameController.NoMatchEvent += ClearSpawnModifiers;
 	}
 	
 	// Update is called once per frame

@@ -49,8 +49,10 @@ public sealed class RingFactory : MonoBehaviour {
             }
         }
     }
+    // ----------------------- SPAWNING IMPLEMENTATION --------------------------------------- //
     public void SpawnRandomRingAtPoint(ReferencePointBehaviour point)
     {
+        // Currently nothing calls this but its good to have
         GameObject ring = Instantiate(RingPrefab);
         RingBehaviour ringComponent = ring.GetComponent<RingBehaviour>();
         ringComponent.CurrentRingData = GenerateNewRingData();
@@ -65,6 +67,7 @@ public sealed class RingFactory : MonoBehaviour {
 
         point.GetComponent<RingPointManager>().AcceptSpawnedRing(ringComponent);
     }
+    // ------------------------------------------------------------------------------------- //
 
     public void CreateNewSet()
     {

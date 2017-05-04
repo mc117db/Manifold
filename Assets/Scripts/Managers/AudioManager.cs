@@ -13,8 +13,8 @@ public class AudioManager : MonoBehaviour {
     public AudioSource[] BassAudioSource;
     // Use this for initialization
     void Start () {
-        ScoreController.ComboUpdateEvent += ScoreController_ComboUpdateEvent;
-        ScoreController.ComboResetEvent += ScoreController_ComboResetEvent;
+        //ScoreController.ComboUpdateEvent += ScoreController_ComboUpdateEvent;
+        //ScoreController.ComboResetEvent += ScoreController_ComboResetEvent;
         GameController.StartEvent += delegate { PlayMusic(0); };
         GameController.StartEvent += delegate { PlayBass(0); };
 
@@ -29,6 +29,7 @@ public class AudioManager : MonoBehaviour {
     {
         if (OnFire)
         {
+            //TODO Find out how to transition into non-sidechain track smoothly and into the same timestamp
             OnFire = false;
             PlayMusic(0);
             PlayBass(0);

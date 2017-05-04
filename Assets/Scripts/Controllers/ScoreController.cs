@@ -8,7 +8,11 @@ public class ScoreImplementationData
 	[SerializeField]
 	public float baseComboMultiplier = 1.5f;
 	[SerializeField]
-	public float compoundComboMultiplier = 1.5f; 
+	public float compoundComboMultiplier = 1.5f;
+    public float anomalyMatchEventScoreMultiplier = 2f;
+    public float forceMatchEventScoreMultiplier = 0.5f;
+    private float currentScoreMultiplier = 1f;
+
 	public ScoreImplementationData(int ringVal,float baseMult,float compMult)
 	{
 		ringValue = ringVal;
@@ -24,15 +28,32 @@ public class ScoreImplementationData
 	public int ModifyScore(int ringConsumed,int curCombo)
 	{
 		int baseScore =  ringValue*ringConsumed;
+        int finalScore = 0;
 		if (curCombo > 1)
 		{
-			return Mathf.FloorToInt(baseScore * (baseComboMultiplier + compoundComboMultiplier*(curCombo-1)));
+            finalScore = Mathf.FloorToInt(baseScore * (baseComboMultiplier + compoundComboMultiplier*(curCombo-1)));
 		}
 		else
 		{
-			return baseScore; // No Combo
+            finalScore = baseScore; // No Combo
 		}
+        return Mathf.RoundToInt(finalScore * currentScoreMultiplier);
 	}
+    public void ModifyScoreMultiplierOnEvent (SpawnType eventtype)
+    {
+        switch (eventtype)
+        {
+            case SpawnType.Normal:
+                currentScoreMultiplier = 1f;
+                break;
+            case SpawnType.Anomaly:
+                currentScoreMultiplier = anomalyMatchEventScoreMultiplier;
+                break;
+            case SpawnType.ForceDrop:
+                currentScoreMultiplier = forceMatchEventScoreMultiplier;
+                break;
+        }
+    }
 }
 
 
@@ -128,7 +149,17 @@ public class ScoreController : MonoBehaviour {
 		}
 		MatchController.OnMatchEventTotalItemsRemoved += RingsConsumed;
         GameController.LoseEvent += StoreHighScore;
+        MatchController.PendingMatchClearedEventType += ModifyScoreMultiplier;
+        MatchController.PendingMatchClearedEvent += ResetModifier;
 	}
+    void ModifyScoreMultiplier(SpawnType eventtype)
+    {
+        currentScoreImplementation.ModifyScoreMultiplierOnEvent(eventtype);
+    }
+    void ResetModifier()
+    {
+        currentScoreImplementation.ModifyScoreMultiplierOnEvent(SpawnType.Normal);
+    }
 	public void RingsConsumed(int totalRingsConsumed)
 	{
 		if (currentScoreImplementation != null)
