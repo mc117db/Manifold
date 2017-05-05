@@ -28,6 +28,9 @@ public class GameController : MonoBehaviour {
     private float remainingTimeLerpVal;
     public float additionalTimePerMatch = 10f;
     public float additionalTimePerCombo = 5f;
+    [Space(20)]
+    [Header("Visual")]
+    public bool ShiftRingColorsBasedOnDepth = false;
 
     private ReferencePointBehaviour targetReferencePointToSpawnWhenStagingSetUpdate;
     private RingData ringDataToSpawnWhenStagingSetUpdate;

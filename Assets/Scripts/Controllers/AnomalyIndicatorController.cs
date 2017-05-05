@@ -64,7 +64,6 @@ public class AnomalyIndicatorController : MonoBehaviour {
         
         if (target)
         {
-
             active = true;
         }
         else

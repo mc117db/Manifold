@@ -9,6 +9,8 @@ public class RingBehaviour : MonoBehaviour {
     bool isInPlace;
     public delegate void stateChange();
     public event stateChange stateChangeEvent;
+    // TEST //
+    private Color outerColor, middleColor, innerColor;
 
     public RingData CurrentRingData
     {
@@ -63,6 +65,7 @@ public class RingBehaviour : MonoBehaviour {
             outer.GetComponent<SpriteRenderer>().color = ColorManager.instance.FetchColorInformation(
             currentRingData.ringColors[0]);
             outer.SetActive(true);
+            outerColor = outer.GetComponent<SpriteRenderer>().color;
         }
         if (!currentRingData.Middle)
         {
@@ -73,6 +76,7 @@ public class RingBehaviour : MonoBehaviour {
             middle.GetComponent<SpriteRenderer>().color = ColorManager.instance.FetchColorInformation(
             currentRingData.ringColors[1]);
             middle.SetActive(true);
+            middleColor = middle.GetComponent<SpriteRenderer>().color;
         }
         if (!currentRingData.Inner)
         {
@@ -83,9 +87,39 @@ public class RingBehaviour : MonoBehaviour {
             inner.GetComponent<SpriteRenderer>().color = ColorManager.instance.FetchColorInformation(
                 currentRingData.ringColors[2]);
             inner.SetActive(true);
+            innerColor = inner.GetComponent<SpriteRenderer>().color;
         }
       
     }
+    void Update ()
+    {
+        if (GameController.instance.ShiftRingColorsBasedOnDepth)
+        {
+            ShiftColorsBasedOnDepth(Mathf.InverseLerp(-1.5f, 1.5f, transform.position.z));
+        }
+    }
+    void ShiftColorsBasedOnDepth(float lerpVal)
+    {
+        HSBColor firstColor, secondColor, thirdColor;
+        if (outer)
+        {
+            firstColor = HSBColor.FromColor(outerColor);
+            firstColor.s = 1-lerpVal/3;
+            outer.GetComponent<SpriteRenderer>().color = firstColor.ToColor();
+        }
+        if (middle)
+        {
+            secondColor = HSBColor.FromColor(middleColor);
+            secondColor.s = 1-lerpVal/3;
+            middle.GetComponent<SpriteRenderer>().color = secondColor.ToColor();
+        }
+        if (inner)
+        {
+            thirdColor = HSBColor.FromColor(innerColor);
+            thirdColor.s = 1-lerpVal/3;
+            inner.GetComponent<SpriteRenderer>().color = thirdColor.ToColor();
+        }
+    } 
     public bool CombineRings (RingData other)
 	{
         // Return true if can combine, else return false.
@@ -228,11 +262,6 @@ public class RingBehaviour : MonoBehaviour {
 	void Start () {
         MatchController.PendingMatchClearedEvent += ClearSpawnModifiers;
         GameController.NoMatchEvent += ClearSpawnModifiers;
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
 	}
     void OnDestroy()
     {
