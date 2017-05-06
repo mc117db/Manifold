@@ -8,23 +8,28 @@ public class ComboTextUpdater : MonoBehaviour {
 
     public Text textComponent;
     Queue<string> messageQueue = new Queue<string>();
-    private string curComboString;
-    bool displayingMessage;
+    public string curComboString;
+    bool displayingMessage = false;
     public float messageLifeTime = 3f;
     public string COMBO_appendText = "COMBO";
 	// Use this for initialization
 	void Start () {
         ScoreController.ComboUpdateEvent += UpdateText;
         MatchController.PendingMatchClearedEventType += ReactToEvent;
-        textComponent.enabled = false;
+        //textComponent.enabled = false;
+//            AddMessageIntoQueue("TEST 1");
+//            AddMessageIntoQueue("TEST 2");
+//            AddMessageIntoQueue("TEST 3");
+//            AddMessageIntoQueue("TEST 4");
+//            AddMessageIntoQueue("TEST 5");
 	}
 	
 	// Update is called once per frame
 	void UpdateText (int curCombo) {
         if (textComponent != null)
         {
-            textComponent.enabled = curCombo > 0 ? true : false;
-            if (curCombo > 0)
+            //textComponent.enabled = curCombo > 0 ? true : false;
+            if (curCombo > 1)
             {
                 curComboString = curCombo.ToString() + " " + COMBO_appendText;
             }
@@ -32,6 +37,9 @@ public class ComboTextUpdater : MonoBehaviour {
             {
                 curComboString = "";
             }
+        }
+        if (!displayingMessage)
+        {
             textComponent.text = curComboString;
         }
 	}
@@ -45,6 +53,7 @@ public class ComboTextUpdater : MonoBehaviour {
     }
     IEnumerator DisplayMessageInQueue()
     {
+        Debug.Log("Displaying Message");
         displayingMessage = true;
         if (textComponent.enabled == false)
         {
@@ -54,10 +63,11 @@ public class ComboTextUpdater : MonoBehaviour {
         textComponent.text = curText;
         // Play animation here maybe?
         textComponent.rectTransform.anchoredPosition3D = new Vector3(0, 60, 0); //TODO Hardcoded value, fetch the height of control instead
-        textComponent.rectTransform.DOMoveY(0, 0.4f);
+        textComponent.rectTransform.DOAnchorPos3D(Vector3.zero,0.5f);
         yield return new WaitForSeconds(messageLifeTime);
-        textComponent.rectTransform.DOMoveY(60, 0.4f);
-        if (messageQueue.Count != 0)
+        textComponent.rectTransform.DOAnchorPos3D(new Vector3(0, 60, 0),0.5f);
+        yield return new WaitForSeconds(0.6f);
+        if (messageQueue.Count > 0)
         {
             StartCoroutine("DisplayMessageInQueue");
         }
@@ -65,10 +75,19 @@ public class ComboTextUpdater : MonoBehaviour {
         {
             textComponent.text = curComboString;
             displayingMessage = false;
+            yield return null;
         }
     }
     void ReactToEvent(SpawnType eventType)
     {
-
+        switch (eventType)
+        {
+            case SpawnType.Anomaly:
+                AddMessageIntoQueue("ANOMALY MATCH");
+                break;
+            case SpawnType.ForceDrop:
+                AddMessageIntoQueue("FORCEDROP MATCH");
+                break; 
+        }
     }
 }
