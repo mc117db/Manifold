@@ -142,6 +142,7 @@ public class GameController : MonoBehaviour {
 
     private void OnDestroy()
     {
+        instance = null;
         StartEvent = null;
         LoseEvent = null;
         CountDownOverEvent = null;
@@ -160,7 +161,9 @@ public class GameController : MonoBehaviour {
         instance = this;
     }
     void Start () {
-        
+
+        // Clean Up
+        SceneController.CleanUp += OnDestroy;
         // Register to events
 		RingFactory.onRefreshSetEvent += onAnomalyEvent;
 		RingFactory.onRefreshSetEvent += AdvanceGameState;
@@ -168,6 +171,7 @@ public class GameController : MonoBehaviour {
         RingFactory.onStagingSetUpdateEvent += onStagingSetUpdate;
 
         // Countdown Events Dependecies
+        GameController.RemoveColorTiersEvent += OnMatchAddTime;
         MatchController.OnMatchEventHappen += OnMatchAddTime;
         ScoreController.ComboIncreaseEvent += OnComboAddTime;
 
@@ -175,6 +179,7 @@ public class GameController : MonoBehaviour {
 
         CountDownOverEvent += ForcePlayStagingSet; // Internal method
         setsNextLevelIntial = setsToNextLevel;
+
         StartGame();
 
 	}
@@ -318,12 +323,13 @@ public class GameController : MonoBehaviour {
         {
             Lose();
         }
-    } 
+    }
     #endregion
 
-    public void ForcePlayStagingSet()
+    #region GameController Members
+    private void ForcePlayStagingSet()
     {
-        Debug.Log("GAME ACTION: Force play rings in staging area"+" TOTAL: "+RingsInStagingArea.Count);
+        Debug.Log("GAME ACTION: Force play rings in staging area" + " TOTAL: " + RingsInStagingArea.Count);
         for (int i = 0; i < RingsInStagingArea.Count; i++)
         {
             if (GAMESTATE == GameState.Running)
@@ -334,7 +340,7 @@ public class GameController : MonoBehaviour {
         }
         RingFactoryComponent.CreateNewSet();
     }
-    public void RemoveAllRings ()
+    private void RemoveAllRings()
     {
         Debug.Log("GAME ACTION: Removing all rings from grid");
         foreach (ReferencePointBehaviour node in TransformationGrid.NODES)
@@ -347,9 +353,9 @@ public class GameController : MonoBehaviour {
             }
         }
     }
-    public void RemoveAllTiersOfColor (ColorIndex colr)
+    private void RemoveAllTiersOfColor(ColorIndex colr)
     {
-        
+
         int noOfRingsOfColor = 0;
         List<Vector3> locationOfNodes = new List<Vector3>();
         foreach (ReferencePointBehaviour node in TransformationGrid.NODES)
@@ -369,19 +375,20 @@ public class GameController : MonoBehaviour {
         }
         if (noOfRingsOfColor > 0)
         {
-            Debug.Log("GAMEACTION: Removing tiers of colorindex: " + colr.ToString() + " ( "+noOfRingsOfColor+" ringtiers removed this way!)");
+            Debug.Log("GAMEACTION: Removing tiers of colorindex: " + colr.ToString() + " ( " + noOfRingsOfColor + " ringtiers removed this way!)");
             ScoreController.instance.RingsConsumed(noOfRingsOfColor);
             if (RemoveColorTiersLocationEvent != null)
             {
-                RemoveColorTiersLocationEvent(locationOfNodes,colr);
+                RemoveColorTiersLocationEvent(locationOfNodes, colr);
             }
             if (RemoveColorTiersEvent != null)
             {
                 RemoveColorTiersEvent();
             }
         }
-    }
-	public void AdvanceGameState()
+    } 
+    #endregion
+    public void AdvanceGameState()
 	{
 		setsRefreshed++;
 		setsToNextLevel--;

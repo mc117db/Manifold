@@ -39,10 +39,14 @@ public class RingPointManager : MonoBehaviour, IDropHandler {
     public event onDragDrop stateChangeDragDrop;
     private void OnDestroy()
     {
-        RingDropEvent = null;
+        if (RingDropEvent != null)
+        {
+            RingDropEvent = null;
+        }
     }
     void Start()
     {
+        SceneController.CleanUp += OnDestroy;
         stateChangeDragDrop += CheckNeighboursForSimiliarColors;
     } 
     // IDROPHANDLER IMPLEMENTATION

@@ -45,6 +45,10 @@ public class ColorManager : MonoBehaviour {
     {
         instance = this;
     }
+    void Start()
+    {
+        SceneController.CleanUp += delegate { instance = null; };
+    }
     public Color FetchColorInformation (ColorIndex index)
     {
         foreach (ColorRegistrationData data in colorRegistrationData)

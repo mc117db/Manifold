@@ -18,6 +18,7 @@ public sealed class RingFactory : MonoBehaviour {
         onStagingSetUpdateEvent = null;
     }
     void Start () {
+        SceneController.CleanUp += OnDestroy;
         RingPointManager.RingDropEvent += UpdateState;
     }
 

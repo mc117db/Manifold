@@ -93,9 +93,12 @@ public class RingBehaviour : MonoBehaviour {
     }
     void Update ()
     {
-        if (GameController.instance.ShiftRingColorsBasedOnDepth)
+        if (GameController.instance != null)
         {
-            ShiftColorsBasedOnDepth(Mathf.InverseLerp(-1.5f, 1.5f, transform.position.z));
+            if (GameController.instance.ShiftRingColorsBasedOnDepth)
+            {
+                ShiftColorsBasedOnDepth(Mathf.InverseLerp(-1.5f, 1.5f, transform.position.z));
+            }
         }
     }
     void ShiftColorsBasedOnDepth(float lerpVal)
@@ -258,13 +261,18 @@ public class RingBehaviour : MonoBehaviour {
             currentRingData.spawnType = SpawnType.Normal;
         }
     }
+ 
 	// Use this for initialization
 	void Start () {
+        SceneController.CleanUp += delegate { OnDestroy(); };
         MatchController.PendingMatchClearedEvent += ClearSpawnModifiers;
         GameController.NoMatchEvent += ClearSpawnModifiers;
 	}
     void OnDestroy()
     {
-        stateChangeEvent = null;
+        if (stateChangeEvent != null)
+        {
+            stateChangeEvent = null;
+        }
     }
 }

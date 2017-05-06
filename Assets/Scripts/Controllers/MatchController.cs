@@ -21,6 +21,7 @@ public sealed class MatchController : MonoBehaviour {
     public static event OnSpawnEventType PendingMatchClearedEventType;
     private void OnDestroy()
     {
+        instance = null;
         OnMatchEventHappen = null;
         OnMatchEventTotalItemsRemoved = null;
         OnMatchEventData = null;
@@ -44,6 +45,7 @@ public sealed class MatchController : MonoBehaviour {
         {
             Debug.LogWarning("DEV: MATCHCONTROLLER IS PREVENTING MATCHES");
         }
+        SceneController.CleanUp += OnDestroy;
         GameController.StartEvent += delegate { pendingDataDictionary.Clear(); };
 	}
     public void StoreMatch (MatchData matchData)

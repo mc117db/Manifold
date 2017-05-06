@@ -129,6 +129,7 @@ public class ScoreController : MonoBehaviour {
     // Use this for initialization
     private void OnDestroy()
     {
+        instance = null;
         ScoreValueUpdateEvent = null;
         ScoreUpdateEvent = null;
         ComboUpdateEvent = null;
@@ -147,8 +148,12 @@ public class ScoreController : MonoBehaviour {
 			Debug.Log("You cannot have more than one ScoreManager!");
 			Destroy(this);
 		}
+        SceneController.CleanUp += OnDestroy;
 		MatchController.OnMatchEventTotalItemsRemoved += RingsConsumed;
+
+        SceneController.CleanUp += StoreHighScore;
         GameController.LoseEvent += StoreHighScore;
+
         MatchController.PendingMatchClearedEventType += ModifyScoreMultiplier;
         MatchController.PendingMatchClearedEvent += ResetModifier;
 	}

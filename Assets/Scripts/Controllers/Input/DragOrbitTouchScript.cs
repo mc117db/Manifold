@@ -31,7 +31,7 @@ public class DragOrbitTouchScript : MonoBehaviour {
     // Use this for initialization
     void Start () 
 	{
-		
+        SceneController.CleanUp += OnDestroy;
 	}
 	
 	// Update is called once per frame

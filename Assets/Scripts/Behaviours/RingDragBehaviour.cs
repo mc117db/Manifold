@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.SceneManagement;
 
 public class RingDragBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
@@ -39,7 +38,7 @@ public class RingDragBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandler,
     void Start()
     {
         CanDrag = true;
-        SceneManager.sceneUnloaded += delegate { FailDragEventGlobal = null; }; // Deregisters everything when scene unloads (important because its static and doesnt belong to any instance)
+        SceneController.CleanUp += delegate { FailDragEventGlobal = null; };
     }
 
     public void OnBeginDrag(PointerEventData eventData)
